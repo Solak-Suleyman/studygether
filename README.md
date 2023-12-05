@@ -1,6 +1,6 @@
 # studygether
 
-A new Flutter project.
+StudyGether is a STUDENT PROJECT
 
 ## Getting Started
 
