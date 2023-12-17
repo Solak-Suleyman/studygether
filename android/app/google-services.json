@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "798630235321",
+    "project_id": "studygetherflutter",
+    "storage_bucket": "studygetherflutter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:798630235321:android:9fccb7b4003092961a1f68",
+        "android_client_info": {
+          "package_name": "com.example.studygether"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTel0TtXh0JBpYbVToIKpxVyhWtxHp7BM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

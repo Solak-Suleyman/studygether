@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:studygether/pages/LoginPage.dart';
+import 'package:studygether/widgets/widgets.dart';
 
 class WelcomePage extends StatefulWidget {
-  const WelcomePage({super.key, required this.title});
-  final String title;
+  const WelcomePage({super.key});
+
   @override
   State<WelcomePage> createState() => _WelcomePageState();
 }
@@ -63,7 +65,9 @@ class _WelcomePageState extends State<WelcomePage> {
                   ),
                 ),
                 TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      nextScreen(context, LoginPage());
+                    },
                     child:const  Text(
                       "I have an account",
                       style: TextStyle(fontSize: 16.0, color: Colors.black),
