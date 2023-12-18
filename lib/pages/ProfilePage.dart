@@ -4,6 +4,7 @@ import 'package:studygether/pages/HomePage.dart';
 // import 'package:studygether/pages/search_page.dart';
 import 'package:studygether/service/auth_service.dart';
 import 'package:studygether/service/database_service.dart';
+import 'package:studygether/widgets/bottomAppbBar.dart';
 import 'package:studygether/widgets/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:firebase_core/firebase_core.dart';
@@ -173,21 +174,12 @@ class _ProfilePage extends State<ProfilePage> {
       body: ListView(
         children: <Widget>[
           UserHeader(),
-          SettingsItem(title: 'NAME'),
-          SettingsItem(title: 'SURNAME'),
-          SettingsItem(title: 'EMAIL ADDRESS'),
+          SettingsItem(title: userName),
+          SettingsItem(title: email),
           SettingsItem(title: 'ABOUT'),
         ],
       ),
-      bottomNavigationBar:
-        BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: "Home"),
-            BottomNavigationBarItem(icon: Icon(Icons.book_outlined), label: "Your Lessons"),
-            BottomNavigationBarItem(icon: Icon(Icons.settings_outlined),label: "Setting")
-          ] 
-        ),
-
+      bottomNavigationBar:const MyBottomAppBar()
     );
   }
 }

@@ -3,6 +3,8 @@ import 'package:studygether/pages/LoginPage.dart';
 import 'package:studygether/pages/SearchPage.dart';
 import 'package:studygether/service/auth_service.dart';
 import 'package:studygether/service/database_service.dart';
+import 'package:studygether/widgets/appbar.dart';
+import 'package:studygether/widgets/bottomAppbBar.dart';
 import 'package:studygether/widgets/group_tile.dart';
 import 'package:studygether/widgets/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -67,40 +69,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          toolbarHeight: MediaQuery.of(context).size.height / 10,
-          actions: [
-            IconButton(
-                onPressed: () {
-                  nextScreen(context, const SearchPage());
-                },
-                icon: const Icon(Icons.notifications_active))
-          ],
-          elevation: 0,
-          centerTitle: true,
-          backgroundColor: Colors.white,
-          title: Column(
-            
-            children: <Widget>[
-            IconButton(
-              iconSize:55 ,
-              onPressed: (){
-                nextScreen(context, ProfilePage());
-              },
-              icon:Icon(Icons.account_circle_outlined,
-  
-              color: Colors.grey[700],)
-            ),
-            Text( 
-              userName,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                  fontFamily: 'work sans'),
-            ),
-          ])),
+      appBar: MyAppBar(appBar: AppBar(),),
       drawer: Drawer(
         child: ListView(
           padding: const EdgeInsets.symmetric(vertical: 50),
@@ -231,13 +200,8 @@ class _HomePageState extends State<HomePage> {
           size: 30,
         ),
       ),
-      bottomNavigationBar:
-          BottomNavigationBar(items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: "Home"),
-        BottomNavigationBarItem(icon: Icon(Icons.book_outlined), label: "Your Lessons"),
-        BottomNavigationBarItem(icon: Icon(Icons.settings_outlined),label: "Setting")
-
-      ]),
+      bottomNavigationBar:MyBottomAppBar()
+          
     );
   }
 
@@ -389,7 +353,7 @@ class _HomePageState extends State<HomePage> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextField(
-        onTap: (){nextScreen(context, SearchPage);},
+        onTap: (){nextScreen(context, const SearchPage());},
         onChanged: (value) {
           setState(() {
             searchQuery = value.toLowerCase();
@@ -403,7 +367,7 @@ class _HomePageState extends State<HomePage> {
             borderSide: BorderSide.none,
           ),
           filled: true,
-          fillColor: Colors.white.withAlpha(235),
+          fillColor: Colors.grey,
         ),
       ),
     );
