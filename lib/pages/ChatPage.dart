@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:studygether/widgets/message_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChatPage extends StatefulWidget {
   final String groupId;
@@ -29,7 +30,7 @@ class _ChatPage extends State<ChatPage> {
   String email = "";
   AuthService authService = AuthService();
   Stream? groups;
-  Stream? chats; //Stream<QuerySnapshot>? chats bu olması lazım QuerySnapshot ne anlamadım
+  Stream<QuerySnapshot>? chats ;//bu olması lazım QuerySnapshot ne anlamadım
   TextEditingController messageController = TextEditingController();
   String admin = "";
   
@@ -37,40 +38,21 @@ class _ChatPage extends State<ChatPage> {
   @override
   void initState() {
     super.initState();
-    gettingUserData();
-  }
 
-  String getId(String res) {
-    return res.substring(0, res.indexOf("_"));
-  }
+    getChatAndAdmin();
 
-  String getName(String res) {
-    return res.substring(res.indexOf("_") + 1);
   }
-
-  gettingUserData() async {
-    await HelperFunctions.getUserEmailFromSF().then((value) {
+  getChatAndAdmin() {
+    DatabaseService().getChats(widget.groupId).then((value) {
       setState(() {
-        email = value!;
+        chats = value;
       });
     });
-
-    await HelperFunctions.getUserNameFromSF().then((value) {
-      setState(() {
-        userName = value!;
-      });
-    });
-
-    // getting list of snapshots in our stream
-    await DatabaseService(uid: FirebaseAuth.instance.currentUser!.uid)
-        .getUserGroups()
-        .then((snapshot) {
-      setState(() {
-        groups = snapshot;
-      });
+    DatabaseService().getGroupAdmin(widget.groupId).then((value) {
+      admin = value;
     });
   }
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -148,6 +130,7 @@ chatMessages() {
     return StreamBuilder(
       stream: chats,
       builder: (context, AsyncSnapshot snapshot) {
+
         return snapshot.hasData
             ? ListView.builder(
                 itemCount: snapshot.data.docs.length,
@@ -159,7 +142,7 @@ chatMessages() {
                           snapshot.data.docs[index]['sender']);
                 },
               )
-            : Container();
+            : Container(child: Text("noluyo"),);
       },
     );
   }

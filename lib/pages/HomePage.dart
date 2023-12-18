@@ -1,5 +1,6 @@
 import 'package:studygether/helper/helper_function.dart';
 import 'package:studygether/pages/LoginPage.dart';
+import 'package:studygether/pages/SearchPage.dart';
 import 'package:studygether/service/auth_service.dart';
 import 'package:studygether/service/database_service.dart';
 import 'package:studygether/widgets/group_tile.dart';
@@ -71,23 +72,30 @@ class _HomePageState extends State<HomePage> {
           actions: [
             IconButton(
                 onPressed: () {
-                  // nextScreen(context, const SearchPage());
+                  nextScreen(context, const SearchPage());
                 },
                 icon: const Icon(Icons.notifications_active))
           ],
           elevation: 0,
           centerTitle: true,
           backgroundColor: Colors.white,
-          title: Column(children: <Widget>[
-            Icon(
-              Icons.account_circle_outlined,
-              size: 50,
-              color: Colors.grey[700],
+          title: Column(
+            
+            children: <Widget>[
+            IconButton(
+              iconSize:55 ,
+              onPressed: (){
+                nextScreen(context, ProfilePage());
+              },
+              icon:Icon(Icons.account_circle_outlined,
+  
+              color: Colors.grey[700],)
             ),
-            Text(
+            Text( 
               userName,
               textAlign: TextAlign.center,
               style: const TextStyle(
+                  color: Colors.black,
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
                   fontFamily: 'work sans'),
@@ -186,7 +194,28 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Column(
         children: [
-          buildSearchBar(), // Call to method that creates the search bar
+
+          Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextField(
+        onTap: (){nextScreen(context, SearchPage());},
+        onChanged: (value) {
+          setState(() {
+            searchQuery = value.toLowerCase();
+          });
+        },
+        decoration: InputDecoration(
+          hintText: 'Search groups...',
+          prefixIcon: const Icon(Icons.search),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide.none,
+          ),
+          filled: true,
+          fillColor: Colors.white.withAlpha(235),
+        ),
+      ),
+    ), // Call to method that creates the search bar
           Expanded(child: groupList()), // Updated for layout
         ],
       ),
@@ -356,10 +385,11 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget buildSearchBar() {
+  Widget buildSearchBar(context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextField(
+        onTap: (){nextScreen(context, SearchPage);},
         onChanged: (value) {
           setState(() {
             searchQuery = value.toLowerCase();

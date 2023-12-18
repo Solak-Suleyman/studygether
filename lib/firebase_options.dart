@@ -17,15 +17,24 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        return ios;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for ios - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -43,38 +52,11 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCGscNQrAYbh67qvx8AKe2XI_Lkkh64C1c',
-    appId: '1:798630235321:web:7d28add1770bf3361a1f68',
-    messagingSenderId: '798630235321',
-    projectId: 'studygetherflutter',
-    authDomain: 'studygetherflutter.firebaseapp.com',
-    storageBucket: 'studygetherflutter.appspot.com',
-  );
-
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDTel0TtXh0JBpYbVToIKpxVyhWtxHp7BM',
-    appId: '1:798630235321:android:9fccb7b4003092961a1f68',
-    messagingSenderId: '798630235321',
-    projectId: 'studygetherflutter',
-    storageBucket: 'studygetherflutter.appspot.com',
-  );
-
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDi5GIpsw9uugEWEXU3S4RlHtdP14bRpCE',
-    appId: '1:798630235321:ios:02b70c9f53ab01521a1f68',
-    messagingSenderId: '798630235321',
-    projectId: 'studygetherflutter',
-    storageBucket: 'studygetherflutter.appspot.com',
-    iosBundleId: 'com.example.studygether',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyDi5GIpsw9uugEWEXU3S4RlHtdP14bRpCE',
-    appId: '1:798630235321:ios:cdc333b4039db30e1a1f68',
-    messagingSenderId: '798630235321',
-    projectId: 'studygetherflutter',
-    storageBucket: 'studygetherflutter.appspot.com',
-    iosBundleId: 'com.example.studygether.RunnerTests',
+    apiKey: 'AIzaSyD7SsUMMjAGFBo3c5nIRiDWkhYYicjj2EI',
+    appId: '1:1013255204495:android:fa01ea22792f8337ff4afa',
+    messagingSenderId: '1013255204495',
+    projectId: 'studygether-android',
+    storageBucket: 'studygether-android.appspot.com',
   );
 }

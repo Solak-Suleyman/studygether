@@ -41,14 +41,20 @@ class _GroupTileState extends State<GroupTile> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
         child: ListTile(
-          leading: CircleAvatar(
-            radius: 30,
-            backgroundColor: Theme.of(context).primaryColor,
-            child: Text(
+          leading: ClipRRect(
+            borderRadius: BorderRadius.circular(8.0),
+            
+            child: Container( 
+              decoration: BoxDecoration(color: Colors.grey),
+              width: 50,
+              alignment: AlignmentDirectional.center,
+              child:Text(
+              
               widget.groupName.substring(0, 1).toUpperCase(),
-              style: const TextStyle(
-                  color: Colors.white, fontWeight: FontWeight.w500),
-            ),
+              style: TextStyle(
+                fontSize: 30,
+                  color: Theme.of(context).primaryColor, fontWeight: FontWeight.w500),
+            ),)
           ),
           title: Text(
             widget.groupName,
