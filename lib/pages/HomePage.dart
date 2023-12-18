@@ -1,13 +1,10 @@
 import 'package:studygether/helper/helper_function.dart';
 import 'package:studygether/pages/LoginPage.dart';
-// import 'package:studygether/pages/profile_page.dart';
-// import 'package:studygether/pages/search_page.dart';
 import 'package:studygether/service/auth_service.dart';
 import 'package:studygether/service/database_service.dart';
 import 'package:studygether/widgets/group_tile.dart';
 import 'package:studygether/widgets/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:studygether/pages/ProfilePage.dart';

@@ -1,5 +1,15 @@
-// import 'package:studygether/pages/chat_page.dart';
-// import 'package:studygether/widgets/widgets.dart';
+import 'package:studygether/helper/helper_function.dart';
+import 'package:studygether/pages/LoginPage.dart';
+import 'package:studygether/pages/HomePage.dart';
+import 'package:studygether/pages/ProfilePage.dart';
+import 'package:studygether/pages/ChatPage.dart';
+import 'package:studygether/service/auth_service.dart';
+import 'package:studygether/service/database_service.dart';
+import 'package:studygether/widgets/widgets.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+
 import 'package:flutter/material.dart';
 
 class GroupTile extends StatefulWidget {
@@ -21,12 +31,12 @@ class _GroupTileState extends State<GroupTile> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // nextScreen(
-        //     context,
-        //     ChatPage(
-        //         groupId: widget.groupId,
-        //         groupName: widget.groupName,
-        //         userName: widget.userName));
+        nextScreen(
+            context,
+            ChatPage(
+                groupId: widget.groupId,
+                groupName: widget.groupName,
+                userName: widget.userName));
       },
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
