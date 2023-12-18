@@ -24,12 +24,12 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       
-      backgroundColor: Color(0xff45474B),
+      backgroundColor: const Color(0xff45474B),
       
       appBar: AppBar(
           centerTitle: true,
-          backgroundColor: Color(0xff45474B),
-          title: Text(
+          backgroundColor: const Color(0xff45474B),
+          title: const Text(
             "Sign Up",
             style: TextStyle(
               color: Colors.white,

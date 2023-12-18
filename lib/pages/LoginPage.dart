@@ -1,4 +1,4 @@
-import 'dart:math';
+// import 'dart:math';
 
 import 'package:studygether/helper/helper_function.dart';
 import 'package:studygether/pages/HomePage.dart';
@@ -29,10 +29,10 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xff45474B),
-      appBar: AppBar(title: Text("Login" ,style:TextStyle(fontFamily: "roboto",fontSize: 30) ,), 
+      backgroundColor: const Color(0xff45474B),
+      appBar: AppBar(title: const Text("Login" ,style:TextStyle(fontFamily: "roboto",fontSize: 30) ,), 
       centerTitle: true,
-      backgroundColor: Color(0xff45474B),
+      backgroundColor: const Color(0xff45474B),
       ),
       body: _isLoading
           ? Center(
@@ -58,7 +58,7 @@ class _LoginPageState extends State<LoginPage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Image.asset("lib/assets/images/image1.png",scale: 2.5 ,),
-                        SizedBox(height:50),
+                        const SizedBox(height:50),
                         SizedBox(
                           width: MediaQuery.of(context).size.width / 1.1,
                           child: TextFormField(

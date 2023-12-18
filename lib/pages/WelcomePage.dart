@@ -57,8 +57,8 @@ class _WelcomePageState extends State<WelcomePage> {
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xffF4CE14),
-                      shape: StadiumBorder(),
-                      padding: EdgeInsets.fromLTRB(90, 20, 90, 20)),
+                      shape: const StadiumBorder(),
+                      padding: const EdgeInsets.fromLTRB(90, 20, 90, 20)),
                   child: const Text(
                     'Sign-up',
                     style: TextStyle(fontSize: 16.0, color: Colors.white),
@@ -66,7 +66,7 @@ class _WelcomePageState extends State<WelcomePage> {
                 ),
                 TextButton(
                     onPressed: () {
-                      nextScreen(context, LoginPage());
+                      nextScreen(context, const LoginPage());
                     },
                     child:const  Text(
                       "I have an account",
