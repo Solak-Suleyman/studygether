@@ -10,6 +10,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:studygether/pages/ProfilePage.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -129,12 +131,11 @@ class _HomePageState extends State<HomePage> {
             ),
             ListTile(
               onTap: () {
-                // nextScreenReplace(
-                //     context,
-                //     ProfilePage(
-                //       userName: userName,
-                //       email: email,
-                //     ));
+                nextScreenReplace(
+                    context,
+                    ProfilePage(
+                      //buranın içi ne amk
+                    ));
               },
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
