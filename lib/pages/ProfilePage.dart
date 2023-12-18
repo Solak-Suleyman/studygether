@@ -4,7 +4,6 @@ import 'package:studygether/pages/HomePage.dart';
 // import 'package:studygether/pages/search_page.dart';
 import 'package:studygether/service/auth_service.dart';
 import 'package:studygether/service/database_service.dart';
-import 'package:studygether/widgets/group_tile.dart';
 import 'package:studygether/widgets/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:firebase_core/firebase_core.dart';
@@ -23,7 +22,6 @@ class _ProfilePage extends State<ProfilePage> {
   String email = "";
   AuthService authService = AuthService();
   Stream? groups;
-  bool _isLoading = false;
   String groupName = "";
   String searchQuery = "";
 
@@ -79,21 +77,8 @@ class _ProfilePage extends State<ProfilePage> {
           elevation: 0,
           centerTitle: true,
           backgroundColor: Colors.white,
-          title: Column(children: <Widget>[
-            Icon(
-              Icons.account_circle_outlined,
-              size: 50,
-              color: Colors.grey[700],
-            ),
-            Text(
-              userName,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                  fontFamily: 'work sans'),
-            ),
-          ])),
+          title: Text(""),
+      ),
       drawer: Drawer(
         child: ListView(
           padding: const EdgeInsets.symmetric(vertical: 50),
@@ -185,10 +170,13 @@ class _ProfilePage extends State<ProfilePage> {
           ],
         ),
       ),
-      body: Column(
-        children: [
-          //buildSearchBar(), // Call to method that creates the search bar
-          //Expanded(child: groupList()), // Updated for layout
+      body: ListView(
+        children: <Widget>[
+          UserHeader(),
+          SettingsItem(title: 'NAME'),
+          SettingsItem(title: 'SURNAME'),
+          SettingsItem(title: 'EMAIL ADDRESS'),
+          SettingsItem(title: 'ABOUT'),
         ],
       ),
       bottomNavigationBar:
@@ -199,7 +187,67 @@ class _ProfilePage extends State<ProfilePage> {
             BottomNavigationBarItem(icon: Icon(Icons.settings_outlined),label: "Setting")
           ] 
         ),
-        
+
+    );
+  }
+}
+class UserHeader extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      child: Row(
+        children: <Widget>[
+          CircleAvatar(
+            radius: 40,
+            backgroundColor: Colors.grey.shade300,
+            child: Icon(
+              Icons.person,
+              size: 40,
+              color: Colors.grey.shade800,
+            ),
+          ),
+          const SizedBox(width: 10),
+          const Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  'General Information',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                // Add more widgets for additional info if needed
+              ],
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.edit),
+            onPressed: () {
+              // Handle edit action
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class SettingsItem extends StatelessWidget {
+  final String title;
+
+  const SettingsItem({required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(title),
+      trailing: const Icon(Icons.chevron_right),
+      onTap: () {
+        // Handle item tap
+      },
     );
   }
 }
