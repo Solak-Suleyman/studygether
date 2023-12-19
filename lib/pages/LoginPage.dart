@@ -30,9 +30,14 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xff45474B),
-      appBar: AppBar(title: const Text("Login" ,style:TextStyle(fontFamily: "roboto",fontSize: 30) ,), 
-      centerTitle: true,
-      backgroundColor: const Color(0xff45474B),
+      appBar: AppBar(
+        title: const Text(
+          "Login",
+          style: TextStyle(
+              fontFamily: "roboto", fontSize: 30, color: Colors.white),
+        ),
+        centerTitle: true,
+        backgroundColor: const Color(0xff45474B),
       ),
       body: _isLoading
           ? Center(
@@ -47,7 +52,6 @@ class _LoginPageState extends State<LoginPage> {
                     borderRadius: BorderRadiusDirectional.only(
                       topStart: Radius.circular(50),
                       topEnd: Radius.circular(50),
-
                     )),
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
@@ -57,14 +61,15 @@ class _LoginPageState extends State<LoginPage> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        Image.asset("lib/assets/images/image1.png",scale: 2.5 ,),
-                        const SizedBox(height:50),
+                        Image.asset(
+                          "lib/assets/images/image1.png",
+                          scale: 2.5,
+                        ),
+                        const SizedBox(height: 50),
                         SizedBox(
                           width: MediaQuery.of(context).size.width / 1.1,
                           child: TextFormField(
-                            
                             decoration: textInputDecoration.copyWith(
-
                                 labelText: "Email",
                                 prefixIcon: Icon(
                                   Icons.email,
@@ -82,7 +87,8 @@ class _LoginPageState extends State<LoginPage> {
                                   ? null
                                   : "Please enter a valid email.";
                             },
-                          ),),
+                          ),
+                        ),
                         const SizedBox(
                           height: 15,
                         ),
@@ -140,12 +146,13 @@ class _LoginPageState extends State<LoginPage> {
                                       decoration: TextDecoration.underline),
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () {
-                                      nextScreen(context,const RegisterPage());
+                                      nextScreen(context, const RegisterPage());
                                     }),
                             ],
                             style: const TextStyle(
                                 color: Colors.black, fontSize: 14))),
-                      ]),
+                      ]
+                      ),
                 ),
               ),
             ),

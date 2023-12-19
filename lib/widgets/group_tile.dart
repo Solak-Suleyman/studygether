@@ -27,6 +27,14 @@ class GroupTile extends StatefulWidget {
 }
 
 class _GroupTileState extends State<GroupTile> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    /* DatabaseService().getLastMessageInfo(widget.groupId); *//*  */
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

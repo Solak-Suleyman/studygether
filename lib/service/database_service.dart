@@ -136,4 +136,15 @@ class DatabaseService {
       "recentMessageTime": chatMessageData['time'].toString()
     });
   }
+
+  // get recent sender
+  Future getLastMessageInfo(String groupId) async {
+    DocumentReference d = groupCollection.doc(groupId);
+    DocumentSnapshot documentSnapshot = await d.get();
+    return {
+      "recentMessage": documentSnapshot["recentMessage"],
+      "recentMessageSender": documentSnapshot["recentMessageSender"],
+
+    };
+  }
 }
