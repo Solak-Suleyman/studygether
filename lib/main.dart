@@ -57,7 +57,7 @@ theme: ThemeData(
         // Customizing other UI elements like AppBar, Buttons etc.
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.white,
-          //iconTheme: IconThemeData(color: customColor), // AppBar icons
+          iconTheme: IconThemeData(color: Colors.black), // AppBar icons
           titleTextStyle: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18), // AppBar title
         ),
         floatingActionButtonTheme: const FloatingActionButtonThemeData(

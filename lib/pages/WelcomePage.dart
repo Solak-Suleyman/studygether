@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:studygether/pages/LoginPage.dart';
+import 'package:studygether/pages/RegisterPage.dart';
 import 'package:studygether/widgets/widgets.dart';
 
 class WelcomePage extends StatefulWidget {
@@ -54,13 +55,13 @@ class _WelcomePageState extends State<WelcomePage> {
                 ),
                 const SizedBox(height: 100),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {nextScreen(context, const RegisterPage());},
                   style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xffF4CE14),
                       shape: const StadiumBorder(),
                       padding: const EdgeInsets.fromLTRB(90, 20, 90, 20)),
                   child: const Text(
-                    'Sign-up',
+                    'Sign Up',
                     style: TextStyle(fontSize: 16.0, color: Colors.white),
                   ),
                 ),

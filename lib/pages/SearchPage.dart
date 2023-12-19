@@ -1,6 +1,7 @@
 import 'package:studygether/helper/helper_function.dart';
 import 'package:studygether/pages/ChatPage.dart';
 import 'package:studygether/service/database_service.dart';
+import 'package:studygether/widgets/appbar.dart';
 import 'package:studygether/widgets/widgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -49,30 +50,21 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        centerTitle: true,
-        backgroundColor: Theme.of(context).primaryColor,
-        title: const Text(
-          "Search",
-          style: TextStyle(
-              fontSize: 27, fontWeight: FontWeight.bold, color: Colors.white),
-        ),
-      ),
+      appBar: MyAppBar(appBar: AppBar()),
       body: Column(
         children: [
           Container(
-            color: Theme.of(context).primaryColor,
+            color: Colors.white,
             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
             child: Row(children: [
               Expanded(
                 child: TextField(
                   controller: searchController,
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.black),
                   decoration: const InputDecoration(
                       border: InputBorder.none,
                       hintText: "Search groups...",
-                      hintStyle: TextStyle(color: Colors.white)),
+                      hintStyle: TextStyle(color: Colors.black)),
                 ),
               ),
               GestureDetector(
@@ -83,11 +75,11 @@ class _SearchPageState extends State<SearchPage> {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.1),
+                      color: Colors.black.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(40)),
                   child: const Icon(
                     Icons.search,
-                    color: Colors.white,
+                    color: Colors.black,
                   ),
                 ),
               )

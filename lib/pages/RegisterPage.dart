@@ -1,5 +1,5 @@
 import 'package:studygether/helper/helper_function.dart';
-import 'package:studygether/pages/WelcomePage.dart';
+import 'package:studygether/pages/HomePage.dart';
 import 'package:studygether/pages/LoginPage.dart';
 import 'package:studygether/service/auth_service.dart';
 import 'package:studygether/widgets/widgets.dart';
@@ -196,7 +196,7 @@ class _RegisterPageState extends State<RegisterPage> {
           await HelperFunctions.saveUserNameSF(fullName);
           nextScreenReplace(
               context,
-              const WelcomePage(
+              const HomePage(
 
               ));
         } else {
