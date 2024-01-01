@@ -4,11 +4,13 @@ class MessageTile extends StatefulWidget {
   final String message;
   final String sender;
   final bool sentByMe;
+  final bool isImage;
   const MessageTile(
       {super.key,
       required this.message,
       required this.sender,
-      required this.sentByMe});
+      required this.sentByMe,
+      required this.isImage});
 
   @override
   State<MessageTile> createState() => _MessageTileState();
@@ -60,11 +62,23 @@ class _MessageTileState extends State<MessageTile> {
             const SizedBox(
               height: 8,
             ),
-            Text(
-              widget.message,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 16, color: Colors.white),
-            )
+            widget.isImage
+                ? Container(
+                    height: 200,
+                    width: 200,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      image: DecorationImage(
+                        image: NetworkImage(widget.message),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  )
+                : Text(
+                    widget.message,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 16, color: Colors.white),
+                  )
           ],
         ),
       ),
