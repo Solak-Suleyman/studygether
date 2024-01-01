@@ -104,12 +104,22 @@ class _ChatPage extends State<ChatPage> {
                 const SizedBox(
                   width: 12,
                 ),
-                CircleAvatar(
-                  backgroundColor: Colors.yellow,
-                  radius: 20,
-                  child: IconButton(
-                    icon: const Icon(Icons.camera_alt, color: Colors.white),
-                    onPressed: sendImageMessage,
+                GestureDetector(
+                  onTap: () {
+                    sendImageMessage();
+                  },
+                  child: Container(
+                    height: 50,
+                    width: 50,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: const Center(
+                        child: Icon(
+                      Icons.camera_alt,
+                      color: Colors.white,
+                    )),
                   ),
                 ),
               ]),
