@@ -72,9 +72,6 @@ class _MyAppState extends State<MyApp> {
         ),
         primaryColor: customColor, // Primary color for the app
         hintColor: customColor, // Secondary color for the app
-
-        // Additional customization as needed
-        // ...
       ),
       home: _isSignedIn ? const HomePage() : const WelcomePage(),
       debugShowCheckedModeBanner: false,

@@ -27,10 +27,28 @@ class DatabaseService {
     });
   }
 
-  // edit user data for profile page
-  Future editUserData() async {
-    return await userCollection.doc(uid).update({
+  Future editUserImage(Uint8List file) async {
+    try {
+      final formattedDate = DateFormat('yyyyMMddHHmmss').format(DateTime.now());
+      final storagePath = 'users/$uid/$formattedDate';
+      final image = await FirebaseStorageService.uploadImage(file, storagePath);
 
+      userCollection.doc(uid).update({"profilePic": image});
+    } catch (e) {
+      // Handle the exception
+      print("Failed to upload image: $e");
+    }
+  }
+
+  // edit user data for profile page
+  Future editUserData(
+      String fullName, String email, String profilePic, String about) async {
+    return await userCollection.doc(uid).update({
+      "fullName": fullName,
+      "email": email,
+      "profilePic": profilePic,
+      "about": about,
+      "uid": uid,
     });
   }
 

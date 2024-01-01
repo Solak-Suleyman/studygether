@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'package:studygether/helper/helper_function.dart';
 import 'package:studygether/pages/LoginPage.dart';
 import 'package:studygether/pages/HomePage.dart';
@@ -10,6 +11,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:studygether/service/media_service.dart';
+//import 'package:cloud_firestore/cloud_fWirestore.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -21,10 +24,12 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePage extends State<ProfilePage> {
   String userName = "";
   String email = "";
+  String about = "";
   AuthService authService = AuthService();
   Stream? groups;
   String groupName = "";
   String searchQuery = "";
+  Uint8List? file;
 
   @override
   void initState() {
@@ -37,6 +42,10 @@ class _ProfilePage extends State<ProfilePage> {
   }
 
   String getName(String res) {
+    return res.substring(res.indexOf("_") + 1);
+  }
+  
+  String getAbout(String res) {
     return res.substring(res.indexOf("_") + 1);
   }
 
@@ -66,7 +75,7 @@ class _ProfilePage extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+        appBar: AppBar(
           toolbarHeight: MediaQuery.of(context).size.height / 10,
           actions: [
             IconButton(
@@ -79,151 +88,163 @@ class _ProfilePage extends State<ProfilePage> {
           centerTitle: true,
           backgroundColor: Colors.white,
           title: Text(""),
-      ),
-      drawer: Drawer(
-        child: ListView(
-          padding: const EdgeInsets.symmetric(vertical: 50),
+        ),
+        drawer: Drawer(
+          child: ListView(
+            padding: const EdgeInsets.symmetric(vertical: 50),
+            children: <Widget>[
+              Icon(
+                Icons.account_circle,
+                size: 150,
+                color: Colors.grey[700],
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              Text(
+                userName,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              const Divider(
+                height: 2,
+              ),
+              ListTile(
+                onTap: () {
+                  nextScreenReplace(
+                      context,
+                      const HomePage(
+                          //buranın içi ne?
+                          ));
+                },
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                leading: const Icon(Icons.group),
+                title:
+                    const Text("Groups", style: TextStyle(color: Colors.black)),
+              ),
+              ListTile(
+                onTap: () {},
+                selectedColor: Theme.of(context).primaryColor,
+                selected: true,
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                leading: const Icon(Icons.group),
+                title: const Text("Profile",
+                    style: TextStyle(color: Colors.black)),
+              ),
+              ListTile(
+                onTap: () async {
+                  showDialog(
+                      barrierDismissible: false,
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text("Logout"),
+                          content:
+                              const Text("Are you sure you want to logout?"),
+                          actions: [
+                            IconButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                icon: const Icon(
+                                  Icons.cancel,
+                                  color: Colors.red,
+                                )),
+                            IconButton(
+                                onPressed: () async {
+                                  await authService.signOut();
+                                  Navigator.of(context).pushAndRemoveUntil(
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const LoginPage()),
+                                      (route) => false);
+                                },
+                                icon: const Icon(
+                                  Icons.done,
+                                  color: Colors.green,
+                                )),
+                          ],
+                        );
+                      });
+                },
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                leading: const Icon(Icons.exit_to_app),
+                title:
+                    const Text("Logout", style: TextStyle(color: Colors.black)),
+              ),
+            ],
+          ),
+        ),
+        body: ListView(
           children: <Widget>[
-            Icon(
-              Icons.account_circle,
-              size: 150,
-              color: Colors.grey[700],
+            Container(
+              height: MediaQuery.of(context).size.height / 6,
+              // padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  Stack(
+                    children: [
+                      CircleAvatar(
+                        radius: 70,
+                        backgroundColor: Colors.grey.shade300,
+                        child: Icon(
+                          Icons.person,
+                          size: 60,
+                          color: Colors.grey.shade800,
+                        ),
+                      ),
+                      Positioned(
+                        bottom: -5,
+                        right: -5,
+                        child: SizedBox(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Theme.of(context).primaryColor,
+                                shape:
+                                    const CircleBorder(side: BorderSide.none)),
+                            child: Icon(Icons.edit),
+                            onPressed: () {
+                              selectImage();
+                            },
+                          ),
+                        ),
+                      )
+                    ],
+                  )
+                ],
+              ),
             ),
-            const SizedBox(
-              height: 15,
-            ),
-            Text(
-              userName,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            const Divider(
-              height: 2,
-            ),
-            ListTile(
-              onTap: () {
-                nextScreenReplace(
-                    context,
-                    const HomePage(
-                      //buranın içi ne amk
-                    ));
-              },
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-              leading: const Icon(Icons.group),
-              title:
-                  const Text("Groups", style: TextStyle(color: Colors.black)),
-            ),
-            ListTile(
-              onTap: () {},
-              selectedColor: Theme.of(context).primaryColor,
-              selected: true,
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-              leading: const Icon(Icons.group),
-              title:
-                  const Text("Profile", style: TextStyle(color: Colors.black)),
-            ),
-            ListTile(
-              onTap: () async {
-                showDialog(
-                    barrierDismissible: false,
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: const Text("Logout"),
-                        content: const Text("Are you sure you want to logout?"),
-                        actions: [
-                          IconButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              icon: const Icon(
-                                Icons.cancel,
-                                color: Colors.red,
-                              )),
-                          IconButton(
-                              onPressed: () async {
-                                await authService.signOut();
-                                Navigator.of(context).pushAndRemoveUntil(
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const LoginPage()),
-                                    (route) => false);
-                              },
-                              icon: const Icon(
-                                Icons.done,
-                                color: Colors.green,
-                              )),
-                        ],
-                      );
-                    });
-              },
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-              leading: const Icon(Icons.exit_to_app),
-              title:
-                  const Text("Logout", style: TextStyle(color: Colors.black)),
-            ),
+            SettingsItem(title: userName),
+            SettingsItem(title: email),
+            SettingsItem(title: about),
+            ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).primaryColor,
+                ),
+                onPressed: () {},
+                child: const Text(
+                  "Update",
+                  style: TextStyle(color: Colors.black),
+                )),
           ],
         ),
-      ),
-      body: ListView(
-        children: <Widget>[
-          UserHeader(),
-          SettingsItem(title: userName),
-          SettingsItem(title: email),
-          SettingsItem(title: 'ABOUT'),
-        ],
-      ),
-      bottomNavigationBar:const MyBottomAppBar()
-    );
+        bottomNavigationBar: const MyBottomAppBar());
   }
-}
-class UserHeader extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      child: Row(
-        children: <Widget>[
-          CircleAvatar(
-            radius: 40,
-            backgroundColor: Colors.grey.shade300,
-            child: Icon(
-              Icons.person,
-              size: 40,
-              color: Colors.grey.shade800,
-            ),
-          ),
-          const SizedBox(width: 10),
-          const Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  'General Information',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-                // Add more widgets for additional info if needed
-              ],
-            ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.edit),
-            onPressed: () {
-              // Handle edit action
-            },
-          ),
-        ],
-      ),
-    );
+
+  Future<void> selectImage() async {
+    final pickedImage = await MediaService.pickImage();
+    setState(() => file = pickedImage);
+    if (file != null) {
+      DatabaseService().editUserImage(file!);
+    }
   }
 }
 
