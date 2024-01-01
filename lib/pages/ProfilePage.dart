@@ -22,6 +22,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePage extends State<ProfilePage> {
+  String uid = "";
   String userName = "";
   String email = "";
   String about = "";
@@ -192,6 +193,12 @@ class _ProfilePage extends State<ProfilePage> {
                 children: <Widget>[
                   Stack(
                     children: [
+                      file != null ? 
+                        CircleAvatar(
+                          radius: 70,
+                          backgroundImage: MemoryImage(file!),
+                        ) 
+                      :
                       CircleAvatar(
                         radius: 70,
                         backgroundColor: Colors.grey.shade300,
@@ -243,7 +250,7 @@ class _ProfilePage extends State<ProfilePage> {
     final pickedImage = await MediaService.pickImage();
     setState(() => file = pickedImage);
     if (file != null) {
-      DatabaseService().editUserImage(file!);
+      DatabaseService().editUserImage(userName,file!);
     }
   }
 }

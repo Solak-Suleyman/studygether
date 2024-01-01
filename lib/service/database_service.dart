@@ -27,7 +27,7 @@ class DatabaseService {
     });
   }
 
-  Future editUserImage(Uint8List file) async {
+  Future editUserImage(String uid,Uint8List file) async {
     try {
       final formattedDate = DateFormat('yyyyMMddHHmmss').format(DateTime.now());
       final storagePath = 'users/$uid/$formattedDate';
@@ -50,6 +50,12 @@ class DatabaseService {
       "about": about,
       "uid": uid,
     });
+  }
+
+  getImage() async{
+    return userCollection
+        .doc(uid)
+        .collection("profilePic");
   }
 
   // getting user data
