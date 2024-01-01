@@ -1,1 +1,30 @@
-
+{
+  "project_info": {
+    "project_number": "844643904156",
+    "firebase_url": "https://studygether-development-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "studygether-development",
+    "storage_bucket": "studygether-development.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:844643904156:android:98ce6f05c5fe8926e49b59",
+        "android_client_info": {
+          "package_name": "com.example.studygether"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDw4YVP8TwL5QLrbAYAFc8h6gOH8gB0Fjk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

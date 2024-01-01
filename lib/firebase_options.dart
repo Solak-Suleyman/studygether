@@ -53,10 +53,11 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyD7SsUMMjAGFBo3c5nIRiDWkhYYicjj2EI',
-    appId: '1:1013255204495:android:fa01ea22792f8337ff4afa',
-    messagingSenderId: '1013255204495',
-    projectId: 'studygether-android',
-    storageBucket: 'studygether-android.appspot.com',
+    apiKey: 'AIzaSyDw4YVP8TwL5QLrbAYAFc8h6gOH8gB0Fjk',
+    appId: '1:844643904156:android:98ce6f05c5fe8926e49b59',
+    messagingSenderId: '844643904156',
+    projectId: 'studygether-development',
+    databaseURL: 'https://studygether-development-default-rtdb.europe-west1.firebasedatabase.app',
+    storageBucket: 'studygether-development.appspot.com',
   );
 }

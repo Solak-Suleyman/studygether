@@ -1,6 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:studygether/helper/helper_function.dart';
 import 'package:studygether/service/auth_service.dart';
 import 'package:studygether/service/database_service.dart';
+import 'package:studygether/service/media_service.dart';
 import 'package:studygether/widgets/appbar.dart';
 import 'package:studygether/widgets/widgets.dart';
 import 'package:studygether/widgets/appbar.dart';
@@ -15,13 +18,7 @@ class ChatPage extends StatefulWidget {
   final String groupName;
   final String userName;
   const ChatPage(
-    {
-
-      required this.groupId,
-      required this.groupName,
-      required this.userName
-    }
-    );
+      {required this.groupId, required this.groupName, required this.userName});
 
   @override
   State<ChatPage> createState() => _ChatPage();
@@ -32,18 +29,18 @@ class _ChatPage extends State<ChatPage> {
   String email = "";
   AuthService authService = AuthService();
   Stream? groups;
-  Stream<QuerySnapshot>? chats ;//bu olması lazım QuerySnapshot ne anlamadım
+  Stream<QuerySnapshot>? chats; //bu olması lazım QuerySnapshot ne anlamadım
   TextEditingController messageController = TextEditingController();
   String admin = "";
-  
+  Uint8List? file;
 
   @override
   void initState() {
     super.initState();
 
     getChatAndAdmin();
-
   }
+
   getChatAndAdmin() {
     DatabaseService().getChats(widget.groupId).then((value) {
       setState(() {
@@ -54,11 +51,13 @@ class _ChatPage extends State<ChatPage> {
       admin = value;
     });
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyAppBar(appBar: AppBar(),),
+      appBar: MyAppBar(
+        appBar: AppBar(),
+      ),
       body: Stack(
         children: <Widget>[
           // chat messages here
@@ -72,22 +71,21 @@ class _ChatPage extends State<ChatPage> {
               color: Colors.grey[700],
               child: Row(children: [
                 Expanded(
-                  child: TextFormField(
-                    controller: messageController,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: const InputDecoration(
-                      hintText: "Send a message...",
-                      hintStyle: TextStyle(color: Colors.white, fontSize: 16),
-                      border: InputBorder.none,
-                    ),
-                  )
-                ),
+                    child: TextFormField(
+                  controller: messageController,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: const InputDecoration(
+                    hintText: "Send a message...",
+                    hintStyle: TextStyle(color: Colors.white, fontSize: 16),
+                    border: InputBorder.none,
+                  ),
+                )),
                 const SizedBox(
                   width: 12,
                 ),
                 GestureDetector(
                   onTap: () {
-                    sendMessage();
+                    sendTextMessage();
                   },
                   child: Container(
                     height: 50,
@@ -102,7 +100,18 @@ class _ChatPage extends State<ChatPage> {
                       color: Colors.white,
                     )),
                   ),
-                )
+                ),
+                const SizedBox(
+                  width: 12,
+                ),
+                CircleAvatar(
+                  backgroundColor: Colors.yellow,
+                  radius: 20,
+                  child: IconButton(
+                    icon: const Icon(Icons.camera_alt, color: Colors.white),
+                    onPressed: sendImageMessage,
+                  ),
+                ),
               ]),
             ),
           )
@@ -110,39 +119,57 @@ class _ChatPage extends State<ChatPage> {
       ),
     );
   }
-chatMessages() {
+
+  chatMessages() {
     return StreamBuilder(
       stream: chats,
       builder: (context, AsyncSnapshot snapshot) {
-
         return snapshot.hasData
             ? ListView.builder(
                 itemCount: snapshot.data.docs.length,
                 itemBuilder: (context, index) {
                   return MessageTile(
                       message: snapshot.data.docs[index]['message'],
+                      isImage: snapshot.data.docs[index]['isImage'],
                       sender: snapshot.data.docs[index]['sender'],
                       sentByMe: widget.userName ==
                           snapshot.data.docs[index]['sender']);
                 },
               )
-            : Container(child: Text("noluyo"),);
+            : Container(
+                child: Text("<NO MESSAGE>"),
+              );
       },
     );
   }
 
-  sendMessage() {
+  sendTextMessage() {
     if (messageController.text.isNotEmpty) {
       Map<String, dynamic> chatMessageMap = {
         "message": messageController.text,
+        "isImage": false,
         "sender": widget.userName,
         "time": DateTime.now().millisecondsSinceEpoch,
       };
 
-      DatabaseService().sendMessage(widget.groupId, chatMessageMap);
+      DatabaseService().sendTextMessage(widget.groupId, chatMessageMap);
       setState(() {
         messageController.clear();
       });
+    }
+  }
+
+  Future<void> sendImageMessage() async {
+    final pickedImage = await MediaService.pickImage();
+    setState(() => file = pickedImage);
+    if (file != null) {
+      Map<String, dynamic> chatMessageMap = {
+        "message": "",
+        "isImage": true,
+        "sender": widget.userName,
+        "time": DateTime.now().millisecondsSinceEpoch,
+      };
+      DatabaseService().sendImageMessage(widget.groupId, chatMessageMap, file!);
     }
   }
 }

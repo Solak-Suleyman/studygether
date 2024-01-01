@@ -1,4 +1,8 @@
+import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
+import 'package:studygether/service/firebase_storage_service.dart';
 
 class DatabaseService {
   final String? uid;
@@ -33,9 +37,11 @@ class DatabaseService {
   getUserGroups() async {
     return userCollection.doc(uid).snapshots();
   }
-  getAllGroups() async{
+
+  getAllGroups() async {
     return groupCollection.snapshots();
   }
+
   // Creating a group
   Future createGroup(String userName, String id, String groupName) async {
     DocumentReference groupDocumentReference = await groupCollection.add({
@@ -128,13 +134,34 @@ class DatabaseService {
     }
   }
 
-  sendMessage(String groupId, Map<String, dynamic> chatMessageData) async {
+  sendTextMessage(String groupId, Map<String, dynamic> chatMessageData) async {
     groupCollection.doc(groupId).collection("messages").add(chatMessageData);
     groupCollection.doc(groupId).update({
       "recentMessage": chatMessageData['message'],
       "recentMessageSender": chatMessageData['sender'],
       "recentMessageTime": chatMessageData['time'].toString()
     });
+  }
+
+  sendImageMessage(String groupId, Map<String, dynamic> chatMessageData,
+      Uint8List file) async {
+    try {
+      final formattedDate = DateFormat('yyyyMMddHHmmss').format(DateTime.now());
+      final storagePath = 'groups/$groupId/$formattedDate';
+      final image = await FirebaseStorageService.uploadImage(file, storagePath);
+
+      chatMessageData["message"] = image;
+
+      groupCollection.doc(groupId).collection("messages").add(chatMessageData);
+      groupCollection.doc(groupId).update({
+        "recentMessage": "IMAGE",
+        "recentMessageSender": chatMessageData['sender'],
+        "recentMessageTime": chatMessageData['time'].toString()
+      });
+    } catch (e) {
+      // Handle the exception
+      print("Failed to upload image: $e");
+    }
   }
 
   // get recent sender
@@ -144,7 +171,6 @@ class DatabaseService {
     return {
       "recentMessage": documentSnapshot["recentMessage"],
       "recentMessageSender": documentSnapshot["recentMessageSender"],
-
     };
   }
 }
