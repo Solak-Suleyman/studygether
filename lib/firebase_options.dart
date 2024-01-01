@@ -17,24 +17,15 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -52,12 +43,38 @@ class DefaultFirebaseOptions {
     }
   }
 
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyB6HUpRj4lc-JE40AJL70Vwc5fDOA6Xu44',
+    appId: '1:570657413949:web:d4592ef7c99da6b24e0354',
+    messagingSenderId: '570657413949',
+    projectId: 'studygether-final',
+    authDomain: 'studygether-final.firebaseapp.com',
+    storageBucket: 'studygether-final.appspot.com',
+  );
+
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDw4YVP8TwL5QLrbAYAFc8h6gOH8gB0Fjk',
-    appId: '1:844643904156:android:98ce6f05c5fe8926e49b59',
-    messagingSenderId: '844643904156',
-    projectId: 'studygether-development',
-    databaseURL: 'https://studygether-development-default-rtdb.europe-west1.firebasedatabase.app',
-    storageBucket: 'studygether-development.appspot.com',
+    apiKey: 'AIzaSyAceSmJg-M-i4E9DHV3ZQZO7eMMWn5SQkE',
+    appId: '1:570657413949:android:8775b29e9ba704c04e0354',
+    messagingSenderId: '570657413949',
+    projectId: 'studygether-final',
+    storageBucket: 'studygether-final.appspot.com',
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyCLoG2xFjBahUP8etJUn7So-jAALb8lxbo',
+    appId: '1:570657413949:ios:875a23c74256f9854e0354',
+    messagingSenderId: '570657413949',
+    projectId: 'studygether-final',
+    storageBucket: 'studygether-final.appspot.com',
+    iosBundleId: 'com.example.studygether',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyCLoG2xFjBahUP8etJUn7So-jAALb8lxbo',
+    appId: '1:570657413949:ios:7843eeeac25fff254e0354',
+    messagingSenderId: '570657413949',
+    projectId: 'studygether-final',
+    storageBucket: 'studygether-final.appspot.com',
+    iosBundleId: 'com.example.studygether.RunnerTests',
   );
 }

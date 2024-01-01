@@ -2,6 +2,7 @@ import 'package:studygether/helper/helper_function.dart';
 import 'package:studygether/pages/HomePage.dart';
 import 'package:studygether/pages/LoginPage.dart';
 import 'package:studygether/service/auth_service.dart';
+import 'package:studygether/service/notification_service.dart';
 import 'package:studygether/widgets/widgets.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -20,12 +21,11 @@ class _RegisterPageState extends State<RegisterPage> {
   String password = "";
   String fullName = "";
   AuthService authService = AuthService();
+  static final notifications = NotificationService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       backgroundColor: const Color(0xff45474B),
-      
       appBar: AppBar(
           centerTitle: true,
           backgroundColor: const Color(0xff45474B),
@@ -68,7 +68,6 @@ class _RegisterPageState extends State<RegisterPage> {
                           width: MediaQuery.of(context).size.width / 1.1,
                           child: TextFormField(
                             decoration: textInputDecoration.copyWith(
-                                
                                 labelText: "Full Name",
                                 prefixIcon: Icon(
                                   Icons.person,
@@ -194,11 +193,8 @@ class _RegisterPageState extends State<RegisterPage> {
           await HelperFunctions.saveUserLoggedInStatus(true);
           await HelperFunctions.saveUserEmailSF(email);
           await HelperFunctions.saveUserNameSF(fullName);
-          nextScreenReplace(
-              context,
-              const HomePage(
 
-              ));
+          nextScreenReplace(context, const HomePage());
         } else {
           showSnackBar(context, Colors.red, value);
           setState(() {
@@ -207,5 +203,7 @@ class _RegisterPageState extends State<RegisterPage> {
         }
       });
     }
+    await notifications.requestPermission();
+    await notifications.getToken();
   }
 }

@@ -7,6 +7,7 @@ import 'package:studygether/pages/RegisterPage.dart';
 
 import 'package:studygether/service/auth_service.dart';
 import 'package:studygether/service/database_service.dart';
+import 'package:studygether/service/notification_service.dart';
 import 'package:studygether/widgets/widgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -26,6 +27,7 @@ class _LoginPageState extends State<LoginPage> {
   String email = "";
   String password = "";
   AuthService authService = AuthService();
+  static final notifications = NotificationService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -151,8 +153,7 @@ class _LoginPageState extends State<LoginPage> {
                             ],
                             style: const TextStyle(
                                 color: Colors.black, fontSize: 14))),
-                      ]
-                      ),
+                      ]),
                 ),
               ),
             ),
@@ -184,5 +185,7 @@ class _LoginPageState extends State<LoginPage> {
         }
       });
     }
+    await notifications.requestPermission();
+    await notifications.getToken();
   }
 }
