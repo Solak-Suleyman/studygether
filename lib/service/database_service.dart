@@ -22,7 +22,15 @@ class DatabaseService {
       "email": email,
       "groups": [],
       "profilePic": "",
+      "about": "",
       "uid": uid,
+    });
+  }
+
+  // edit user data for profile page
+  Future editUserData() async {
+    return await userCollection.doc(uid).update({
+
     });
   }
 

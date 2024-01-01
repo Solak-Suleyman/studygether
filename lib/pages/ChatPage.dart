@@ -1,13 +1,13 @@
 import 'dart:typed_data';
 
-import 'package:studygether/helper/helper_function.dart';
+//import 'package:studygether/helper/helper_function.dart';
 import 'package:studygether/service/auth_service.dart';
 import 'package:studygether/service/database_service.dart';
 import 'package:studygether/service/media_service.dart';
 import 'package:studygether/widgets/appbar.dart';
-import 'package:studygether/widgets/widgets.dart';
-import 'package:studygether/widgets/appbar.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+//import 'package:studygether/widgets/widgets.dart';
+//import 'package:studygether/widgets/appbar.dart';
+//import 'package:firebase_auth/firebase_auth.dart';
 import 'package:studygether/widgets/message_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -29,7 +29,7 @@ class _ChatPage extends State<ChatPage> {
   String email = "";
   AuthService authService = AuthService();
   Stream? groups;
-  Stream<QuerySnapshot>? chats; //bu olması lazım QuerySnapshot ne anlamadım
+  Stream<QuerySnapshot>? chats;
   TextEditingController messageController = TextEditingController();
   String admin = "";
   Uint8List? file;

@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:studygether/helper/helper_function.dart';
-import 'package:studygether/pages/ProfilePage.dart';
+//import 'package:studygether/pages/ProfilePage.dart';
 import 'package:studygether/pages/SearchPage.dart';
 
 import 'package:studygether/widgets/widgets.dart';
