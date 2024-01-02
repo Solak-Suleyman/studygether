@@ -1,4 +1,5 @@
 import 'package:firebase_app_check/firebase_app_check.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:studygether/firebase_options.dart';
 import 'package:studygether/helper/helper_function.dart';
 import 'package:studygether/pages/HomePage.dart';
@@ -9,13 +10,17 @@ import 'package:studygether/pages/WelcomePage.dart';
 
 // import 'package:firebase_core/firebase_core.dart';
 // import 'firebase_options.dart';
-
+Future<void> _backgroundMessageHandler(RemoteMessage message) async{
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+}
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   ); // initialize all widgets and firebase
   await FirebaseAppCheck.instance.activate();
+  await FirebaseMessaging.instance.getInitialMessage();
+  FirebaseMessaging.onBackgroundMessage(_backgroundMessageHandler);
   runApp(const MyApp());
 }
 

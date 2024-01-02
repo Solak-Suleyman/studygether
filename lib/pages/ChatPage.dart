@@ -1,9 +1,11 @@
 import 'dart:typed_data';
 
 //import 'package:studygether/helper/helper_function.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:studygether/service/auth_service.dart';
 import 'package:studygether/service/database_service.dart';
 import 'package:studygether/service/media_service.dart';
+import 'package:studygether/service/notification_service.dart';
 import 'package:studygether/widgets/appbar.dart';
 //import 'package:studygether/widgets/widgets.dart';
 //import 'package:studygether/widgets/appbar.dart';
@@ -17,14 +19,20 @@ class ChatPage extends StatefulWidget {
   final String groupId;
   final String groupName;
   final String userName;
+
+
   const ChatPage(
       {required this.groupId, required this.groupName, required this.userName});
+      
 
   @override
   State<ChatPage> createState() => _ChatPage();
 }
 
 class _ChatPage extends State<ChatPage> {
+  final controller = TextEditingController();
+  final notificationsService = NotificationService();
+
   String userName = "";
   String email = "";
   AuthService authService = AuthService();
@@ -39,6 +47,7 @@ class _ChatPage extends State<ChatPage> {
     super.initState();
 
     getChatAndAdmin();
+    notificationsService.firebaseNotification(context);
   }
 
   getChatAndAdmin() {
@@ -153,7 +162,7 @@ class _ChatPage extends State<ChatPage> {
     );
   }
 
-  sendTextMessage() {
+  sendTextMessage() async {
     if (messageController.text.isNotEmpty) {
       Map<String, dynamic> chatMessageMap = {
         "message": messageController.text,
@@ -166,6 +175,10 @@ class _ChatPage extends State<ChatPage> {
       setState(() {
         messageController.clear();
       });
+        await notificationsService.sendNotification(
+        body: controller.text,
+        senderId: FirebaseAuth.instance.currentUser!.uid,
+      );
     }
   }
 
@@ -180,6 +193,10 @@ class _ChatPage extends State<ChatPage> {
         "time": DateTime.now().millisecondsSinceEpoch,
       };
       DatabaseService().sendImageMessage(widget.groupId, chatMessageMap, file!);
+      await notificationsService.sendNotification(
+        body: controller.text,
+        senderId: FirebaseAuth.instance.currentUser!.uid,
+      );
     }
   }
 }

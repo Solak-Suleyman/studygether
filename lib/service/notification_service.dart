@@ -1,11 +1,17 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:http/http.dart' as http;
+import 'package:studygether/pages/ChatPage.dart';
+import 'package:studygether/service/database_service.dart';
 
 class NotificationService {
+  final databaeService=DatabaseService();
   static const key =
       "AAAAhN3VGz0:APA91bE7KWZp0hVxbNkmqBzqO5T0BXsnN_ibb3iEiksjtnbEcv6zSZlk71XfHHz9zX6Pd-rjsBjKZHJMmQL1yhMo3S41qnjgVylbYKD2SeYwCPBjFCp71x9x8K7LghlVgolzC8Kbvjfp";
 
@@ -83,5 +89,59 @@ class NotificationService {
     Future<void> getToken() async{
       final token=await FirebaseMessaging.instance.getToken(); 
       _saveToken(token!);
+
     }
+
+List<String> receiverTokens = [];
+
+    Future<void> getRecieverTokens(String?groupId) async{
+      receiverTokens=databaeService.getGroupUsers(groupId);
+    }
+ void firebaseNotification(context) {
+    _initLocalNotification();
+
+    FirebaseMessaging.onMessageOpenedApp
+        .listen((RemoteMessage message) async {
+          
+    });
+
+    FirebaseMessaging.onMessage
+        .listen((RemoteMessage message) async {
+      await _showLocalNotification(message);
+    });
+  }
+
+
+   Future<void> sendNotification(
+      {required String body,
+      required String senderId}) async {
+    try {
+      await receiverTokens.map((receiverToken) => {
+       http.post(
+        Uri.parse('https://fcm.googleapis.com/fcm/send'),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'Authorization': 'key=$key',
+        },
+        body: jsonEncode(<String, dynamic>{
+          "to": receiverToken,
+          'priority': 'high',
+          'notification': <String, dynamic>{
+            'body': body,
+            'title': 'New Message !',
+          },
+          'data': <String, String>{
+            'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+            'status': 'done',
+            'senderId': senderId,
+          }
+        }),
+      )
+
+      });
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
 }
+

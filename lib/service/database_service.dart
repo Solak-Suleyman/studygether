@@ -107,6 +107,11 @@ class DatabaseService {
         .orderBy("time")
         .snapshots();
   }
+  getGroupUsers(groupId)async{
+     DocumentReference d=groupCollection.doc(groupId);
+     DocumentSnapshot documentSnapshot=await d.get();
+     return documentSnapshot['members'];
+  }
 
   Future getGroupAdmin(String groupId) async {
     DocumentReference d = groupCollection.doc(groupId);
