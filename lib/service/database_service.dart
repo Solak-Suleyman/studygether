@@ -55,13 +55,6 @@ class DatabaseService {
     });
   }
 
-<<<<<<< HEAD
-=======
-  getImage() async {
-    return userCollection.doc(uid).collection("profilePic");
-  }
-
->>>>>>> e28ed8c09c2af10103dd9643d14908ce7488a955
   // getting user data
   Future gettingUserData(String email) async {
     QuerySnapshot snapshot =
