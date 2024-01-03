@@ -27,7 +27,7 @@ class DatabaseService {
     });
   }
 
-  Future editUserImage(String uid,Uint8List file) async {
+  Future editUserImage(String uid, Uint8List file) async {
     try {
       final formattedDate = DateFormat('yyyyMMddHHmmss').format(DateTime.now());
       final storagePath = 'users/$uid/$formattedDate';
@@ -52,10 +52,8 @@ class DatabaseService {
     });
   }
 
-  getImage() async{
-    return userCollection
-        .doc(uid)
-        .collection("profilePic");
+  getImage() async {
+    return userCollection.doc(uid).collection("profilePic");
   }
 
   // getting user data
@@ -75,7 +73,8 @@ class DatabaseService {
   }
 
   // Creating a group
-  Future createGroup(String userName, String id, String groupName) async {
+  Future createGroup(
+      String userName, String id, String groupName, bool isPrivate) async {
     DocumentReference groupDocumentReference = await groupCollection.add({
       "groupName": groupName,
       "groupIcon": "",
@@ -84,6 +83,7 @@ class DatabaseService {
       "groupId": "",
       "recentMessage": "",
       "recentMessageSender": "",
+      "isPrivate": "",
     });
 
     // update the members
@@ -107,10 +107,11 @@ class DatabaseService {
         .orderBy("time")
         .snapshots();
   }
-  getGroupUsers(groupId)async{
-     DocumentReference d=groupCollection.doc(groupId);
-     DocumentSnapshot documentSnapshot=await d.get();
-     return documentSnapshot['members'];
+
+  getGroupUsers(groupId) async {
+    DocumentReference d = groupCollection.doc(groupId);
+    DocumentSnapshot documentSnapshot = await d.get();
+    return documentSnapshot['members'];
   }
 
   Future getGroupAdmin(String groupId) async {
