@@ -55,6 +55,13 @@ class DatabaseService {
     });
   }
 
+<<<<<<< HEAD
+=======
+  getImage() async {
+    return userCollection.doc(uid).collection("profilePic");
+  }
+
+>>>>>>> e28ed8c09c2af10103dd9643d14908ce7488a955
   // getting user data
   Future gettingUserData(String email) async {
     QuerySnapshot snapshot =
@@ -78,7 +85,8 @@ class DatabaseService {
   }
 
   // Creating a group
-  Future createGroup(String userName, String id, String groupName) async {
+  Future createGroup(
+      String userName, String id, String groupName, bool isPrivate) async {
     DocumentReference groupDocumentReference = await groupCollection.add({
       "groupName": groupName,
       "groupIcon": "",
@@ -87,6 +95,7 @@ class DatabaseService {
       "groupId": "",
       "recentMessage": "",
       "recentMessageSender": "",
+      "isPrivate": "",
     });
 
     // update the members

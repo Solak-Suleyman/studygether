@@ -1,3 +1,4 @@
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:studygether/helper/helper_function.dart';
 import 'package:studygether/pages/LoginPage.dart';
 import 'package:studygether/pages/SearchPage.dart';
@@ -28,12 +29,17 @@ class _HomePageState extends State<HomePage> {
   bool _isLoading = false;
   String groupName = "";
   String searchQuery = "";
+<<<<<<< HEAD
   String profilePic = "";
+=======
+  bool isPrivate = false;
+>>>>>>> e28ed8c09c2af10103dd9643d14908ce7488a955
 
   @override
   void initState() {
     super.initState();
     gettingUserData();
+    loadSwitchValue();
   }
 
   String getId(String res) {
@@ -42,6 +48,22 @@ class _HomePageState extends State<HomePage> {
 
   String getName(String res) {
     return res.substring(res.indexOf("_") + 1);
+  }
+
+  loadSwitchValue() async {
+    SharedPreferences sf = await SharedPreferences.getInstance();
+
+    setState(() {
+      isPrivate = (sf.getBool("value")) ?? false;
+    });
+  }
+
+  savetSwitchValue() async {
+    SharedPreferences sf = await SharedPreferences.getInstance();
+
+    setState(() {
+      sf.setBool("value", isPrivate);
+    });
   }
 
   gettingUserData() async {
@@ -111,7 +133,15 @@ class _HomePageState extends State<HomePage> {
               ),
               ListTile(
                 onTap: () {
+<<<<<<< HEAD
                   nextScreenReplace(context, ProfilePage());
+=======
+                  nextScreenReplace(
+                      context,
+                      ProfilePage(
+                          //buranın içi ne amk
+                          ));
+>>>>>>> e28ed8c09c2af10103dd9643d14908ce7488a955
                 },
                 contentPadding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
@@ -186,6 +216,15 @@ class _HomePageState extends State<HomePage> {
                   ),
                   filled: true,
                   fillColor: Colors.white.withAlpha(235),
+<<<<<<< HEAD
+=======
+                  suffixIcon: IconButton(
+                    icon: Icon(Icons.lock_outlined),
+                    onPressed: () {
+                      nextScreen(context, SearchPage());
+                    },
+                  ),
+>>>>>>> e28ed8c09c2af10103dd9643d14908ce7488a955
                 ),
               ),
             ), // Call to method that creates the search bar
@@ -225,26 +264,44 @@ class _HomePageState extends State<HomePage> {
                           color: Theme.of(context).primaryColor,
                         ),
                       )
-                    : TextField(
-                        onChanged: (value) {
-                          setState(() {
-                            groupName = value;
-                          });
-                        },
-                        style: const TextStyle(color: Colors.black),
-                        decoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Theme.of(context).primaryColor),
-                              borderRadius: BorderRadius.circular(20)),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  const BorderSide(color: Colors.purple),
-                              borderRadius: BorderRadius.circular(20)),
-                          errorBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(color: Colors.red),
-                              borderRadius: BorderRadius.circular(20)),
-                        ),
+                    : Column(
+                        children: <Widget>[
+                          TextField(
+                            onChanged: (value) {
+                              setState(() {
+                                groupName = value;
+                              });
+                            },
+                            style: const TextStyle(color: Colors.black),
+                            decoration: InputDecoration(
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Theme.of(context).primaryColor),
+                                  borderRadius: BorderRadius.circular(20)),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide:
+                                      const BorderSide(color: Colors.purple),
+                                  borderRadius: BorderRadius.circular(20)),
+                              errorBorder: OutlineInputBorder(
+                                  borderSide:
+                                      const BorderSide(color: Colors.red),
+                                  borderRadius: BorderRadius.circular(20)),
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              Text("Private"),
+                              Checkbox(
+                                  value: isPrivate,
+                                  onChanged: (newBool) {
+                                    setState() {
+                                      isPrivate = newBool!;
+                                      savetSwitchValue();
+                                    }
+                                  }),
+                            ],
+                          )
+                        ],
                       ),
               ]),
               actions: [
@@ -264,8 +321,11 @@ class _HomePageState extends State<HomePage> {
                       });
                       DatabaseService(
                               uid: FirebaseAuth.instance.currentUser!.uid)
-                          .createGroup(userName,
-                              FirebaseAuth.instance.currentUser!.uid, groupName)
+                          .createGroup(
+                              userName,
+                              FirebaseAuth.instance.currentUser!.uid,
+                              groupName,
+                              isPrivate)
                           .whenComplete(() {
                         _isLoading = false;
                       });
