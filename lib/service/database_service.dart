@@ -113,10 +113,19 @@ class DatabaseService {
         .snapshots();
   }
 
-  getGroupUsers(groupId) async {
-    DocumentReference d = groupCollection.doc(groupId);
-    DocumentSnapshot documentSnapshot = await d.get();
-    return documentSnapshot['members'];
+  Future getGroupUsers(groupId) async {
+    DocumentSnapshot documentSnapshot =
+        await groupCollection.doc(groupId).get();
+    if (documentSnapshot.exists) {
+      Map<String, dynamic> data =
+          documentSnapshot.data() as Map<String, dynamic>;
+      if (data != null && data.containsKey('members')) {
+        List<dynamic> membersDynamic = data['members'] ?? [];
+        // Ensuring that all members are indeed Strings
+        return membersDynamic.whereType<String>().toList();
+      }
+      return [];
+    }
   }
 
   Future getGroupAdmin(String groupId) async {

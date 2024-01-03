@@ -20,10 +20,8 @@ class ChatPage extends StatefulWidget {
   final String groupName;
   final String userName;
 
-
   const ChatPage(
       {required this.groupId, required this.groupName, required this.userName});
-      
 
   @override
   State<ChatPage> createState() => _ChatPage();
@@ -175,9 +173,10 @@ class _ChatPage extends State<ChatPage> {
       setState(() {
         messageController.clear();
       });
-        await notificationsService.sendNotification(
+      await notificationsService.sendNotification(
         body: controller.text,
         senderId: FirebaseAuth.instance.currentUser!.uid,
+        groupId: widget.groupId,
       );
     }
   }
@@ -196,6 +195,7 @@ class _ChatPage extends State<ChatPage> {
       await notificationsService.sendNotification(
         body: controller.text,
         senderId: FirebaseAuth.instance.currentUser!.uid,
+        groupId: widget.groupId,
       );
     }
   }

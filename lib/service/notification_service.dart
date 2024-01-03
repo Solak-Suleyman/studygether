@@ -11,7 +11,7 @@ import 'package:studygether/pages/ChatPage.dart';
 import 'package:studygether/service/database_service.dart';
 
 class NotificationService {
-  final databaeService=DatabaseService();
+  final databaseService=DatabaseService();
   static const key =
       "AAAAhN3VGz0:APA91bE7KWZp0hVxbNkmqBzqO5T0BXsnN_ibb3iEiksjtnbEcv6zSZlk71XfHHz9zX6Pd-rjsBjKZHJMmQL1yhMo3S41qnjgVylbYKD2SeYwCPBjFCp71x9x8K7LghlVgolzC8Kbvjfp";
 
@@ -95,7 +95,8 @@ class NotificationService {
 List<String> receiverTokens = [];
 
     Future<void> getRecieverTokens(String?groupId) async{
-      receiverTokens=databaeService.getGroupUsers(groupId);
+      print(databaseService.getGroupUsers(groupId));
+      print(receiverTokens);
     }
  void firebaseNotification(context) {
     _initLocalNotification();
@@ -114,9 +115,12 @@ List<String> receiverTokens = [];
 
    Future<void> sendNotification(
       {required String body,
-      required String senderId}) async {
+      required String senderId,
+      required String groupId}) async {
     try {
-      await receiverTokens.map((receiverToken) => {
+      getRecieverTokens(senderId);
+      receiverTokens.map((receiverToken) => {
+        debugPrint("selam"),
        http.post(
         Uri.parse('https://fcm.googleapis.com/fcm/send'),
         headers: <String, String>{
