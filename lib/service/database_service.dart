@@ -27,13 +27,16 @@ class DatabaseService {
     });
   }
 
-  Future editUserImage(String uid,Uint8List file) async {
+  Future editUserImage(String uid, Uint8List file) async {
     try {
       final formattedDate = DateFormat('yyyyMMddHHmmss').format(DateTime.now());
       final storagePath = 'users/$uid/$formattedDate';
+      print(storagePath);
+
       final image = await FirebaseStorageService.uploadImage(file, storagePath);
 
       userCollection.doc(uid).update({"profilePic": image});
+      return image;
     } catch (e) {
       // Handle the exception
       print("Failed to upload image: $e");
@@ -52,17 +55,17 @@ class DatabaseService {
     });
   }
 
-  getImage() async{
-    return userCollection
-        .doc(uid)
-        .collection("profilePic");
-  }
-
   // getting user data
   Future gettingUserData(String email) async {
     QuerySnapshot snapshot =
         await userCollection.where("email", isEqualTo: email).get();
     return snapshot;
+  }
+
+  Future getProfilePic(String uid) async {
+    DocumentReference d = userCollection.doc(uid);
+    DocumentSnapshot documentSnapshot = await d.get();
+    return documentSnapshot['profilePic'];
   }
 
   // get user groups
@@ -107,10 +110,11 @@ class DatabaseService {
         .orderBy("time")
         .snapshots();
   }
-  getGroupUsers(groupId)async{
-     DocumentReference d=groupCollection.doc(groupId);
-     DocumentSnapshot documentSnapshot=await d.get();
-     return documentSnapshot['members'];
+
+  getGroupUsers(groupId) async {
+    DocumentReference d = groupCollection.doc(groupId);
+    DocumentSnapshot documentSnapshot = await d.get();
+    return documentSnapshot['members'];
   }
 
   Future getGroupAdmin(String groupId) async {

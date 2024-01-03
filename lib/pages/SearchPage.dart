@@ -15,6 +15,7 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
+  String uid = FirebaseAuth.instance.currentUser!.uid;
   TextEditingController searchController = TextEditingController();
   bool _isLoading = false;
   QuerySnapshot? searchSnapshot;
@@ -22,6 +23,7 @@ class _SearchPageState extends State<SearchPage> {
   String userName = "";
   bool isJoined = false;
   User? user;
+  String profilePic = "";
 
   @override
   void initState() {
@@ -37,6 +39,10 @@ class _SearchPageState extends State<SearchPage> {
       });
     });
     user = FirebaseAuth.instance.currentUser!;
+    
+    await DatabaseService().getProfilePic(uid).then((value) {
+      profilePic = value;
+    });
   }
 
   String getId(String res) {

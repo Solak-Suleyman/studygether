@@ -22,7 +22,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePage extends State<ProfilePage> {
-  String uid = "";
+  String uid = FirebaseAuth.instance.currentUser!.uid;
   String userName = "";
   String email = "";
   String about = "";
@@ -31,23 +31,12 @@ class _ProfilePage extends State<ProfilePage> {
   String groupName = "";
   String searchQuery = "";
   Uint8List? file;
+  String profilePic = "";
 
   @override
   void initState() {
     super.initState();
     gettingUserData();
-  }
-
-  String getId(String res) {
-    return res.substring(0, res.indexOf("_"));
-  }
-
-  String getName(String res) {
-    return res.substring(res.indexOf("_") + 1);
-  }
-  
-  String getAbout(String res) {
-    return res.substring(res.indexOf("_") + 1);
   }
 
   gettingUserData() async {
@@ -70,6 +59,10 @@ class _ProfilePage extends State<ProfilePage> {
       setState(() {
         groups = snapshot;
       });
+    });
+
+    await DatabaseService().getProfilePic(uid).then((value) {
+      profilePic = value;
     });
   }
 
@@ -193,21 +186,20 @@ class _ProfilePage extends State<ProfilePage> {
                 children: <Widget>[
                   Stack(
                     children: [
-                      file != null ? 
-                        CircleAvatar(
-                          radius: 70,
-                          backgroundImage: MemoryImage(file!),
-                        ) 
-                      :
-                      CircleAvatar(
-                        radius: 70,
-                        backgroundColor: Colors.grey.shade300,
-                        child: Icon(
-                          Icons.person,
-                          size: 60,
-                          color: Colors.grey.shade800,
-                        ),
-                      ),
+                      profilePic != ""
+                          ? CircleAvatar(
+                              radius: 70,
+                              backgroundColor: Colors.grey.shade300,
+                              backgroundImage: NetworkImage(profilePic))
+                          : CircleAvatar(
+                              radius: 70,
+                              backgroundColor: Colors.grey.shade300,
+                              child: Icon(
+                                Icons.person,
+                                size: 60,
+                                color: Colors.grey.shade800,
+                              ),
+                            ),
                       Positioned(
                         bottom: -5,
                         right: -5,
@@ -250,7 +242,10 @@ class _ProfilePage extends State<ProfilePage> {
     final pickedImage = await MediaService.pickImage();
     setState(() => file = pickedImage);
     if (file != null) {
-      DatabaseService().editUserImage(userName,file!);
+      //DatabaseService().editUserImage(uid, file!);
+      DatabaseService().editUserImage(uid, file!).then((value) => setState(() {
+            profilePic = value;
+          }));
     }
   }
 }

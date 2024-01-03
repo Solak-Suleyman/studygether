@@ -12,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:studygether/pages/ProfilePage.dart';
 
-
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -21,6 +20,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  String uid = FirebaseAuth.instance.currentUser!.uid;
   String userName = "";
   String email = "";
   AuthService authService = AuthService();
@@ -28,6 +28,7 @@ class _HomePageState extends State<HomePage> {
   bool _isLoading = false;
   String groupName = "";
   String searchQuery = "";
+  String profilePic = "";
 
   @override
   void initState() {
@@ -64,145 +65,146 @@ class _HomePageState extends State<HomePage> {
         groups = snapshot;
       });
     });
+    await DatabaseService().getProfilePic(uid).then((value) {
+      profilePic = value;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyAppBar(appBar: AppBar(),),
-      drawer: Drawer(
-        child: ListView(
-          padding: const EdgeInsets.symmetric(vertical: 50),
-          children: <Widget>[
-            Icon(
-              Icons.account_circle,
-              size: 150,
-              color: Colors.grey[700],
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            Text(
-              userName,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            const Divider(
-              height: 2,
-            ),
-            ListTile(
-              onTap: () {},
-              selectedColor: Theme.of(context).primaryColor,
-              selected: true,
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-              leading: const Icon(Icons.group),
-              title:
-                  const Text("Groups", style: TextStyle(color: Colors.black)),
-            ),
-            ListTile(
-              onTap: () {
-                nextScreenReplace(
-                    context,
-                    ProfilePage(
-                      //buranın içi ne amk
-                    ));
-              },
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-              leading: const Icon(Icons.group),
-              title:
-                  const Text("Profile", style: TextStyle(color: Colors.black)),
-            ),
-            ListTile(
-              onTap: () async {
-                showDialog(
-                    barrierDismissible: false,
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: const Text("Logout"),
-                        content: const Text("Are you sure you want to logout?"),
-                        actions: [
-                          IconButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              icon: const Icon(
-                                Icons.cancel,
-                                color: Colors.red,
-                              )),
-                          IconButton(
-                              onPressed: () async {
-                                await authService.signOut();
-                                Navigator.of(context).pushAndRemoveUntil(
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const LoginPage()),
-                                    (route) => false);
-                              },
-                              icon: const Icon(
-                                Icons.done,
-                                color: Colors.green,
-                              )),
-                        ],
-                      );
-                    });
-              },
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-              leading: const Icon(Icons.exit_to_app),
-              title:
-                  const Text("Logout", style: TextStyle(color: Colors.black)),
-            ),
+        appBar: MyAppBar(
+          appBar: AppBar(),
+        ),
+        drawer: Drawer(
+          child: ListView(
+            padding: const EdgeInsets.symmetric(vertical: 50),
+            children: <Widget>[
+              Icon(
+                Icons.account_circle,
+                size: 150,
+                color: Colors.grey[700],
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              Text(
+                userName,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              const Divider(
+                height: 2,
+              ),
+              ListTile(
+                onTap: () {},
+                selectedColor: Theme.of(context).primaryColor,
+                selected: true,
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                leading: const Icon(Icons.group),
+                title:
+                    const Text("Groups", style: TextStyle(color: Colors.black)),
+              ),
+              ListTile(
+                onTap: () {
+                  nextScreenReplace(context, ProfilePage());
+                },
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                leading: const Icon(Icons.group),
+                title: const Text("Profile",
+                    style: TextStyle(color: Colors.black)),
+              ),
+              ListTile(
+                onTap: () async {
+                  showDialog(
+                      barrierDismissible: false,
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text("Logout"),
+                          content:
+                              const Text("Are you sure you want to logout?"),
+                          actions: [
+                            IconButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                icon: const Icon(
+                                  Icons.cancel,
+                                  color: Colors.red,
+                                )),
+                            IconButton(
+                                onPressed: () async {
+                                  await authService.signOut();
+                                  Navigator.of(context).pushAndRemoveUntil(
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const LoginPage()),
+                                      (route) => false);
+                                },
+                                icon: const Icon(
+                                  Icons.done,
+                                  color: Colors.green,
+                                )),
+                          ],
+                        );
+                      });
+                },
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                leading: const Icon(Icons.exit_to_app),
+                title:
+                    const Text("Logout", style: TextStyle(color: Colors.black)),
+              ),
+            ],
+          ),
+        ),
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                onTap: () {
+                  nextScreen(context, SearchPage());
+                },
+                onChanged: (value) {
+                  setState(() {
+                    searchQuery = value.toLowerCase();
+                  });
+                },
+                decoration: InputDecoration(
+                  hintText: 'Search groups...',
+                  prefixIcon: const Icon(Icons.search),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide.none,
+                  ),
+                  filled: true,
+                  fillColor: Colors.white.withAlpha(235),
+                ),
+              ),
+            ), // Call to method that creates the search bar
+            Expanded(child: groupList()), // Updated for layout
           ],
         ),
-      ),
-      body: Column(
-        children: [
-
-          Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: TextField(
-        onTap: (){nextScreen(context, SearchPage());},
-        onChanged: (value) {
-          setState(() {
-            searchQuery = value.toLowerCase();
-          });
-        },
-        decoration: InputDecoration(
-          hintText: 'Search groups...',
-          prefixIcon: const Icon(Icons.search),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide.none,
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            popUpDialog(context);
+          },
+          elevation: 0,
+          backgroundColor: Theme.of(context).primaryColor,
+          child: const Icon(
+            Icons.add,
+            color: Colors.white,
+            size: 30,
           ),
-          filled: true,
-          fillColor: Colors.white.withAlpha(235),
         ),
-      ),
-    ), // Call to method that creates the search bar
-          Expanded(child: groupList()), // Updated for layout
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          popUpDialog(context);
-        },
-        elevation: 0,
-        backgroundColor: Theme.of(context).primaryColor,
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-          size: 30,
-        ),
-      ),
-      bottomNavigationBar:MyBottomAppBar()
-          
-    );
+        bottomNavigationBar: MyBottomAppBar());
   }
 
   popUpDialog(BuildContext context) {
@@ -302,7 +304,6 @@ class _HomePageState extends State<HomePage> {
                       groupId: getId(snapshot.data['groups'][reverseIndex]),
                       groupName:
                           getName(snapshot.data['groups'][reverseIndex]));
-                      
                 },
               );
             } else {
@@ -354,7 +355,9 @@ class _HomePageState extends State<HomePage> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextField(
-        onTap: (){nextScreen(context, const SearchPage());},
+        onTap: () {
+          nextScreen(context, const SearchPage());
+        },
         onChanged: (value) {
           setState(() {
             searchQuery = value.toLowerCase();
