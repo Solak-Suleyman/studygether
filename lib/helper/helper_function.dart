@@ -38,9 +38,4 @@ class HelperFunctions {
     SharedPreferences sf = await SharedPreferences.getInstance();
     return sf.getString(userNameKey);
   }
-
-  static Future<bool> setSwitchPrivateValue(String userEmail) async {
-    SharedPreferences sf = await SharedPreferences.getInstance();
-    return await sf.setString(userEmailKey, userEmail);
-  }
 }

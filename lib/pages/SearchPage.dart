@@ -39,7 +39,7 @@ class _SearchPageState extends State<SearchPage> {
       });
     });
     user = FirebaseAuth.instance.currentUser!;
-    
+
     await DatabaseService().getProfilePic(uid).then((value) {
       profilePic = value;
     });
@@ -129,11 +129,13 @@ class _SearchPageState extends State<SearchPage> {
             shrinkWrap: true,
             itemCount: searchSnapshot!.docs.length,
             itemBuilder: (context, index) {
-              return groupTile(
-                  userName,
-                  searchSnapshot!.docs[index]['groupId'],
-                  searchSnapshot!.docs[index]['groupName'],
-                  searchSnapshot!.docs[index]['admin']);
+              if (searchSnapshot!.docs[index]['isPrivate'] == false) {
+                return groupTile(
+                    userName,
+                    searchSnapshot!.docs[index]['groupId'],
+                    searchSnapshot!.docs[index]['groupName'],
+                    searchSnapshot!.docs[index]['admin']);
+              }
             },
           )
         : Container();

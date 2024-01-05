@@ -12,6 +12,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:studygether/pages/ProfilePage.dart';
+import 'package:studygether/pages/PrivateSearchPage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -36,7 +37,6 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     gettingUserData();
-    loadSwitchValue();
   }
 
   String getId(String res) {
@@ -45,22 +45,6 @@ class _HomePageState extends State<HomePage> {
 
   String getName(String res) {
     return res.substring(res.indexOf("_") + 1);
-  }
-
-  loadSwitchValue() async {
-    SharedPreferences sf = await SharedPreferences.getInstance();
-
-    setState(() {
-      isPrivate = (sf.getBool("value")) ?? false;
-    });
-  }
-
-  savetSwitchValue() async {
-    SharedPreferences sf = await SharedPreferences.getInstance();
-
-    setState(() {
-      sf.setBool("value", isPrivate);
-    });
   }
 
   gettingUserData() async {
@@ -189,7 +173,7 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.all(8.0),
               child: TextField(
                 onTap: () {
-                  nextScreen(context, SearchPage());
+                  nextScreen(context, const SearchPage());
                 },
                 onChanged: (value) {
                   setState(() {
@@ -208,7 +192,7 @@ class _HomePageState extends State<HomePage> {
                   suffixIcon: IconButton(
                     icon: Icon(Icons.lock_outlined),
                     onPressed: () {
-                      nextScreen(context, SearchPage());
+                      nextScreen(context, const PrivateSearchPage());
                     },
                   ),
                 ),
@@ -280,10 +264,9 @@ class _HomePageState extends State<HomePage> {
                               Checkbox(
                                   value: isPrivate,
                                   onChanged: (newBool) {
-                                    setState() {
+                                    setState(() {
                                       isPrivate = newBool!;
-                                      savetSwitchValue();
-                                    }
+                                    });
                                   }),
                             ],
                           )

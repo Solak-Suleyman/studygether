@@ -88,7 +88,7 @@ class DatabaseService {
       "groupId": "",
       "recentMessage": "",
       "recentMessageSender": "",
-      "isPrivate": "",
+      "isPrivate": isPrivate,
     });
 
     // update the members
