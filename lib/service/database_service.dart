@@ -68,6 +68,12 @@ class DatabaseService {
     return documentSnapshot['profilePic'];
   }
 
+  Future getUserAbout(String uid) async {
+    DocumentReference d = userCollection.doc(uid);
+    DocumentSnapshot documentSnapshot = await d.get();
+    return documentSnapshot['about'];
+  }
+
   // get user groups
   getUserGroups() async {
     return userCollection.doc(uid).snapshots();

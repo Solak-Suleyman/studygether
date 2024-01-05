@@ -1,12 +1,12 @@
 import 'dart:typed_data';
 import 'package:studygether/helper/helper_function.dart';
 import 'package:studygether/pages/LoginPage.dart';
-import 'package:studygether/pages/HomePage.dart';
+//import 'package:studygether/pages/HomePage.dart';
 // import 'package:studygether/pages/search_page.dart';
 import 'package:studygether/service/auth_service.dart';
 import 'package:studygether/service/database_service.dart';
 import 'package:studygether/widgets/bottomAppbBar.dart';
-import 'package:studygether/widgets/widgets.dart';
+//import 'package:studygether/widgets/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -61,6 +61,10 @@ class _ProfilePage extends State<ProfilePage> {
       });
     });
 
+    await DatabaseService().getUserAbout(uid).then((value) {
+      about = value;
+    });
+
     await DatabaseService().getProfilePic(uid).then((value) {
       profilePic = value;
     });
@@ -82,98 +86,6 @@ class _ProfilePage extends State<ProfilePage> {
           centerTitle: true,
           backgroundColor: Colors.white,
           title: Text(""),
-        ),
-        drawer: Drawer(
-          child: ListView(
-            padding: const EdgeInsets.symmetric(vertical: 50),
-            children: <Widget>[
-              Icon(
-                Icons.account_circle,
-                size: 150,
-                color: Colors.grey[700],
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              Text(
-                userName,
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              const Divider(
-                height: 2,
-              ),
-              ListTile(
-                onTap: () {
-                  nextScreenReplace(
-                      context,
-                      const HomePage(
-                          //buranın içi ne?
-                          ));
-                },
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                leading: const Icon(Icons.group),
-                title:
-                    const Text("Groups", style: TextStyle(color: Colors.black)),
-              ),
-              ListTile(
-                onTap: () {},
-                selectedColor: Theme.of(context).primaryColor,
-                selected: true,
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                leading: const Icon(Icons.group),
-                title: const Text("Profile",
-                    style: TextStyle(color: Colors.black)),
-              ),
-              ListTile(
-                onTap: () async {
-                  showDialog(
-                      barrierDismissible: false,
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: const Text("Logout"),
-                          content:
-                              const Text("Are you sure you want to logout?"),
-                          actions: [
-                            IconButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                icon: const Icon(
-                                  Icons.cancel,
-                                  color: Colors.red,
-                                )),
-                            IconButton(
-                                onPressed: () async {
-                                  await authService.signOut();
-                                  Navigator.of(context).pushAndRemoveUntil(
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const LoginPage()),
-                                      (route) => false);
-                                },
-                                icon: const Icon(
-                                  Icons.done,
-                                  color: Colors.green,
-                                )),
-                          ],
-                        );
-                      });
-                },
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                leading: const Icon(Icons.exit_to_app),
-                title:
-                    const Text("Logout", style: TextStyle(color: Colors.black)),
-              ),
-            ],
-          ),
         ),
         body: ListView(
           children: <Widget>[
@@ -233,6 +145,47 @@ class _ProfilePage extends State<ProfilePage> {
                   "Update",
                   style: TextStyle(color: Colors.black),
                 )),
+            const SizedBox(height: 10),
+            InkWell(
+              child: const Text(
+                "Logout",
+                textAlign: TextAlign.center,
+              ),
+              onTap: () async {
+                showDialog(
+                    barrierDismissible: false,
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text("Logout"),
+                        content: const Text("Are you sure you want to logout?"),
+                        actions: [
+                          IconButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              icon: const Icon(
+                                Icons.cancel,
+                                color: Colors.red,
+                              )),
+                          IconButton(
+                              onPressed: () async {
+                                await authService.signOut();
+                                Navigator.of(context).pushAndRemoveUntil(
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const LoginPage()),
+                                    (route) => false);
+                              },
+                              icon: const Icon(
+                                Icons.done,
+                                color: Colors.green,
+                              )),
+                        ],
+                      );
+                    });
+              },
+            )
           ],
         ),
         bottomNavigationBar: const MyBottomAppBar());
