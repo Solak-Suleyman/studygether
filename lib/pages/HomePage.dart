@@ -32,6 +32,7 @@ class _HomePageState extends State<HomePage> {
   String searchQuery = "";
   String profilePic = "";
   bool isPrivate = false;
+  String password = "";
 
   @override
   void initState() {
@@ -156,6 +157,7 @@ class _HomePageState extends State<HomePage> {
                             },
                             style: const TextStyle(color: Colors.black),
                             decoration: InputDecoration(
+                              labelText: 'Group Name',
                               enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
                                       color: Theme.of(context).primaryColor),
@@ -181,7 +183,36 @@ class _HomePageState extends State<HomePage> {
                                     });
                                   }),
                             ],
-                          )
+                          ),
+                          TextField(
+                            onChanged: (value) {
+                              setState(() {
+                                if (isPrivate == true) {
+                                  password = value;
+                                } else {
+                                  password = "";
+                                }
+                              });
+                            },
+                            enabled: isPrivate,
+                            obscureText: true,
+                            style: const TextStyle(color: Colors.black),
+                            decoration: InputDecoration(
+                              labelText: 'Password',
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Theme.of(context).primaryColor),
+                                  borderRadius: BorderRadius.circular(20)),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide:
+                                      const BorderSide(color: Colors.purple),
+                                  borderRadius: BorderRadius.circular(20)),
+                              errorBorder: OutlineInputBorder(
+                                  borderSide:
+                                      const BorderSide(color: Colors.red),
+                                  borderRadius: BorderRadius.circular(20)),
+                            ),
+                          ),
                         ],
                       ),
               ]),
@@ -206,9 +237,11 @@ class _HomePageState extends State<HomePage> {
                               userName,
                               FirebaseAuth.instance.currentUser!.uid,
                               groupName,
-                              isPrivate)
+                              isPrivate,
+                              password)
                           .whenComplete(() {
                         _isLoading = false;
+                        password = "";
                       });
                       Navigator.of(context).pop();
                       showSnackBar(

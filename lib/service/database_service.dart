@@ -84,8 +84,8 @@ class DatabaseService {
   }
 
   // Creating a group
-  Future createGroup(
-      String userName, String id, String groupName, bool isPrivate) async {
+  Future createGroup(String userName, String id, String groupName,
+      bool isPrivate, String password) async {
     DocumentReference groupDocumentReference = await groupCollection.add({
       "groupName": groupName,
       "groupIcon": "",
@@ -95,6 +95,7 @@ class DatabaseService {
       "recentMessage": "",
       "recentMessageSender": "",
       "isPrivate": isPrivate,
+      "password": password,
     });
 
     // update the members
