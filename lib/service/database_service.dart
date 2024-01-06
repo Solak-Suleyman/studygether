@@ -3,10 +3,13 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:studygether/helper/helper_function.dart';
+import 'package:studygether/service/auth_service.dart';
 import 'package:studygether/service/firebase_storage_service.dart';
 
 class DatabaseService {
   final String? uid;
+  AuthService authService = AuthService();
+    
   DatabaseService({this.uid});
 
   // reference for collections
@@ -57,6 +60,7 @@ class DatabaseService {
         HelperFunctions.saveUserNameSF(value);
       }
       if (col == "email") {
+        authService.updateUserEmail(value);
         HelperFunctions.saveUserEmailSF(value);
       }
     }
