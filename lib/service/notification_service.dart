@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,7 +12,7 @@ import 'package:studygether/pages/ChatPage.dart';
 import 'package:studygether/service/database_service.dart';
 
 class NotificationService {
-  final databaseService=DatabaseService();
+  final databaseService = DatabaseService();
   static const key =
       "AAAAhN3VGz0:APA91bE7KWZp0hVxbNkmqBzqO5T0BXsnN_ibb3iEiksjtnbEcv6zSZlk71XfHHz9zX6Pd-rjsBjKZHJMmQL1yhMo3S41qnjgVylbYKD2SeYwCPBjFCp71x9x8K7LghlVgolzC8Kbvjfp";
 
@@ -56,8 +57,8 @@ class NotificationService {
   }
 
   Future<void> requestPermission() async {
-    final messaging=FirebaseMessaging.instance;
-    final settings= await messaging.requestPermission(
+    final messaging = FirebaseMessaging.instance;
+    final settings = await messaging.requestPermission(
       alert: true,
       announcement: false,
       badge: true,
@@ -66,86 +67,87 @@ class NotificationService {
       provisional: false,
       sound: true,
     );
-    if (settings.authorizationStatus==AuthorizationStatus.authorized) {
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
       debugPrint('User granted Permission');
-      
-    }
-    else if(settings.authorizationStatus==AuthorizationStatus.provisional){
+    } else if (settings.authorizationStatus ==
+        AuthorizationStatus.provisional) {
       debugPrint('User granted provisional permission');
-    }else{
-      debugPrint(
-        'User declined or has not accepted permission'
-      );
+    } else {
+      debugPrint('User declined or has not accepted permission');
     }
-
-
   }
-  Future<void> _saveToken(String token) async=>
+
+  Future<void> _saveToken(String token) async =>
       await FirebaseFirestore.instance
-      .collection('users')
-      .doc(FirebaseAuth.instance.currentUser!.uid)
-      .set({'token':token},SetOptions(merge: true));
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .set({'token': token}, SetOptions(merge: true));
+
+  Future<void> getToken() async {
+    final token = await FirebaseMessaging.instance.getToken();
+    _saveToken(token!);
+  }
+
+  List<String> receiverTokens = [];
+    List<String> members = [];
+
+  getReceiverTokens(List<String> members) {
+    members.map((member) => {
+          member = member.substring(0, member.indexOf("_")),
+          databaseService.getToken(member),
+          receiverTokens.add(member)
+        });
     
-    Future<void> getToken() async{
-      final token=await FirebaseMessaging.instance.getToken(); 
-      _saveToken(token!);
+  }
 
-    }
-
-List<String> receiverTokens = [];
-
-    Future<void> getRecieverTokens(String?groupId) async{
-      print(databaseService.getGroupUsers(groupId));
-      print(receiverTokens);
-    }
- void firebaseNotification(context) {
+  void firebaseNotification(context) {
     _initLocalNotification();
 
     FirebaseMessaging.onMessageOpenedApp
-        .listen((RemoteMessage message) async {
-          
-    });
+        .listen((RemoteMessage message) async {});
 
-    FirebaseMessaging.onMessage
-        .listen((RemoteMessage message) async {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       await _showLocalNotification(message);
     });
   }
 
-
-   Future<void> sendNotification(
+  Future<void> sendNotification(
       {required String body,
       required String senderId,
       required String groupId}) async {
     try {
-      getRecieverTokens(senderId);
-      receiverTokens.map((receiverToken) => {
-        debugPrint("selam"),
-       http.post(
-        Uri.parse('https://fcm.googleapis.com/fcm/send'),
-        headers: <String, String>{
-          'Content-Type': 'application/json',
-          'Authorization': 'key=$key',
-        },
-        body: jsonEncode(<String, dynamic>{
-          "to": receiverToken,
-          'priority': 'high',
-          'notification': <String, dynamic>{
-            'body': body,
-            'title': 'New Message !',
-          },
-          'data': <String, String>{
-            'click_action': 'FLUTTER_NOTIFICATION_CLICK',
-            'status': 'done',
-            'senderId': senderId,
-          }
-        }),
-      )
+    databaseService.getGroupUsers(groupId).then((value)=>{
+      
+    });
+      getReceiverTokens(members);
 
-      });
+      receiverTokens.map((receiverToken) => {
+            if (receiverToken != senderId)
+              {
+                http.post(
+                  Uri.parse('https://fcm.googleapis.com/fcm/send'),
+                  headers: <String, String>{
+                    'Content-Type': 'application/json',
+                    'Authorization': 'key=$key',
+                  },
+                  body: jsonEncode(<String, dynamic>{
+                    "to": receiverToken,
+                    'priority': 'high',
+                    'notification': <String, dynamic>{
+                      'body': body,
+                      'title': 'New Message !',
+                    },
+                    'data': <String, String>{
+                      'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+                      'status': 'done',
+                      'senderId': senderId,
+                    }
+                  }),
+                )
+              },
+          });
     } catch (e) {
       debugPrint(e.toString());
     }
   }
 }
-

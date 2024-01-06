@@ -28,7 +28,7 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPage extends State<ChatPage> {
-  final controller = TextEditingController();
+
   final notificationsService = NotificationService();
 
   String userName = "";
@@ -170,14 +170,15 @@ class _ChatPage extends State<ChatPage> {
       };
 
       DatabaseService().sendTextMessage(widget.groupId, chatMessageMap);
-      setState(() {
-        messageController.clear();
-      });
+
       await notificationsService.sendNotification(
-        body: controller.text,
+        body: messageController.text,
         senderId: FirebaseAuth.instance.currentUser!.uid,
         groupId: widget.groupId,
       );
+            setState(() {
+        messageController.clear();
+      });
     }
   }
 
@@ -193,7 +194,7 @@ class _ChatPage extends State<ChatPage> {
       };
       DatabaseService().sendImageMessage(widget.groupId, chatMessageMap, file!);
       await notificationsService.sendNotification(
-        body: controller.text,
+        body: messageController.text,
         senderId: FirebaseAuth.instance.currentUser!.uid,
         groupId: widget.groupId,
       );
