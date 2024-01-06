@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:studygether/helper/helper_function.dart';
 import 'package:studygether/service/firebase_storage_service.dart';
 
 class DatabaseService {
@@ -44,15 +45,21 @@ class DatabaseService {
   }
 
   // edit user data for profile page
-  Future editUserData(
-      String fullName, String email, String profilePic, String about) async {
-    return await userCollection.doc(uid).update({
-      "fullName": fullName,
-      "email": email,
-      "profilePic": profilePic,
-      "about": about,
-      "uid": uid,
-    });
+  Future editUserData(String value, String col) async {
+    if (value == "") {
+      return "";
+    } 
+    else {
+      await userCollection.doc(uid).update({
+        col: value,
+      });
+      if (col == "fullName") {
+        HelperFunctions.saveUserNameSF(value);
+      }
+      if (col == "email") {
+        HelperFunctions.saveUserEmailSF(value);
+      }
+    }
   }
 
   // getting user data

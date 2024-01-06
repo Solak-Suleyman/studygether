@@ -12,6 +12,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:studygether/service/media_service.dart';
+
 //import 'package:cloud_firestore/cloud_fWirestore.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -32,7 +33,14 @@ class _ProfilePage extends State<ProfilePage> {
   String searchQuery = "";
   Uint8List? file;
   String profilePic = "";
-
+ 
+  callback(String newValue,String col){
+    setState(() {
+      if(col == "fullName"){userName = newValue;}
+      if(col == "email"){email = newValue;}
+      if(col == "about"){about = newValue;}
+    });
+  }
   @override
   void initState() {
     super.initState();
@@ -133,18 +141,18 @@ class _ProfilePage extends State<ProfilePage> {
                 ],
               ),
             ),
-            SettingsItem(title: userName),
-            SettingsItem(title: email),
-            SettingsItem(title: about),
-            ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).primaryColor,
-                ),
-                onPressed: () {},
-                child: const Text(
-                  "Update",
-                  style: TextStyle(color: Colors.black),
-                )),
+            SettingsItem(callback: this.callback, title: userName, col: "fullName"),
+            SettingsItem(callback: this.callback, title: email, col: "email"),
+            SettingsItem(callback: this.callback, title: about, col: "about"),
+            // ElevatedButton(
+            //     style: ElevatedButton.styleFrom(
+            //       backgroundColor: Theme.of(context).primaryColor,
+            //     ),
+            //     onPressed: () {},
+            //     child: const Text(
+            //       "Update",
+            //       style: TextStyle(color: Colors.black),
+            //     )),
             const SizedBox(height: 10),
             InkWell(
               child: const Text(
@@ -203,18 +211,65 @@ class _ProfilePage extends State<ProfilePage> {
   }
 }
 
-class SettingsItem extends StatelessWidget {
+class SettingsItem extends StatefulWidget {
   final String title;
+  final String col;
+  final Function callback;
+  const SettingsItem({required this.callback,required this.title, required this.col});
 
-  const SettingsItem({required this.title});
+  @override
+  State<SettingsItem> createState() => _SettingsItemState();
+}
 
+class _SettingsItemState extends State<SettingsItem> {
+  String temp = "";
+  DatabaseService databaseService =
+      DatabaseService(uid: FirebaseAuth.instance.currentUser!.uid);
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(title),
+      title: Text(widget.title),
       trailing: const Icon(Icons.chevron_right),
-      onTap: () {
-        // Handle item tap
+      onTap: () async {
+        showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text("Edit"),
+                content: TextFormField(
+                  initialValue: widget.title,
+                  onChanged: (value) {
+                    setState(() {
+                      temp = value;
+                    });
+                  },
+                ),
+                actions: [
+                  IconButton(
+                      onPressed: () {
+                        setState(() {
+                          databaseService.editUserData(temp, widget.col);
+                          widget.callback(temp,widget.col);
+                          Navigator.pop(context);
+                          
+                        });
+                      },
+                      icon: const Icon(
+                        Icons.done,
+                        color: Colors.green,
+                      )),
+                  IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: const Icon(
+                        Icons.cancel,
+                        color: Colors.red,
+                      )),
+                ],
+              );
+            });
       },
     );
   }
