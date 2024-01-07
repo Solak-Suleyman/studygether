@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:studygether/helper/helper_function.dart';
 import 'package:studygether/pages/ChatPage.dart';
 import 'package:studygether/service/database_service.dart';
@@ -22,6 +24,7 @@ class _PrivateSearchPageState extends State<PrivateSearchPage> {
   String userName = "";
   bool isJoined = false;
   User? user;
+  String password1 = "";
 
   @override
   void initState() {
@@ -63,7 +66,7 @@ class _PrivateSearchPageState extends State<PrivateSearchPage> {
                   style: const TextStyle(color: Colors.black),
                   decoration: const InputDecoration(
                       border: InputBorder.none,
-                      hintText: "Search groups...",
+                      hintText: "Search private groups...",
                       hintStyle: TextStyle(color: Colors.black)),
                 ),
               ),
@@ -128,7 +131,8 @@ class _PrivateSearchPageState extends State<PrivateSearchPage> {
                     userName,
                     searchSnapshot!.docs[index]['groupId'],
                     searchSnapshot!.docs[index]['groupName'],
-                    searchSnapshot!.docs[index]['admin']);
+                    searchSnapshot!.docs[index]['admin'],
+                    searchSnapshot!.docs[index]['password']);
               }
             },
           )
@@ -146,8 +150,100 @@ class _PrivateSearchPageState extends State<PrivateSearchPage> {
     });
   }
 
-  Widget groupTile(
-      String userName, String groupId, String groupName, String admin) {
+  popUpDialog(BuildContext context, String pass, String userName,
+      String groupId, String groupName) {
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+              title: const Text(
+                "Write password",
+                textAlign: TextAlign.left,
+              ),
+              content: Column(mainAxisSize: MainAxisSize.min, children: [
+                _isLoading == true
+                    ? Center(
+                        child: CircularProgressIndicator(
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      )
+                    : Column(
+                        children: <Widget>[
+                          TextField(
+                            onChanged: (value) {
+                              setState(() {
+                                password1 = value;
+                              });
+                            },
+                            style: const TextStyle(color: Colors.black),
+                            obscureText: true,
+                            decoration: InputDecoration(
+                              labelText: 'Password',
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Theme.of(context).primaryColor),
+                                  borderRadius: BorderRadius.circular(20)),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide:
+                                      const BorderSide(color: Colors.purple),
+                                  borderRadius: BorderRadius.circular(20)),
+                              errorBorder: OutlineInputBorder(
+                                  borderSide:
+                                      const BorderSide(color: Colors.red),
+                                  borderRadius: BorderRadius.circular(20)),
+                            ),
+                          ),
+                        ],
+                      ),
+              ]),
+              actions: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).primaryColor),
+                  child: const Text("CANCEL"),
+                ),
+                ElevatedButton(
+                    onPressed: () async {
+                      if (password1 == pass) {
+                        password1 = "";
+                        await DatabaseService(uid: user!.uid)
+                            .joinTheGroup(groupId, userName, groupName);
+
+                        showSnackBar(context, Colors.green,
+                            "Successfully joined the group.");
+
+                        Future.delayed(const Duration(seconds: 2), () {
+                          if (mounted) {
+                            Navigator.of(context).pop();
+                            nextScreenReplace(
+                                context,
+                                ChatPage(
+                                    groupId: groupId,
+                                    groupName: groupName,
+                                    userName: userName));
+                          }
+                        });
+                      } else {
+                        showSnackBar(context, Colors.red, "Wrong password!!");
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).primaryColor),
+                    child: const Text("JOIN")),
+              ],
+            );
+          });
+        });
+  }
+
+  Widget groupTile(String userName, String groupId, String groupName,
+      String admin, String password) {
     // check whether user is already in the group
     joinedOrNot(userName, groupId, groupName, admin);
     return ListTile(
@@ -167,23 +263,15 @@ class _PrivateSearchPageState extends State<PrivateSearchPage> {
       subtitle: Text("Admin: ${getName(admin)}"),
       trailing: InkWell(
         onTap: () async {
-          await DatabaseService(uid: user!.uid)
-              .toggleGroupJoin(groupId, userName, groupName);
-          if (isJoined) {
+          if (!isJoined) {
+            popUpDialog(context, password, userName, groupId, groupName);
+
             setState(() {
               isJoined = !isJoined;
             });
-            showSnackBar(
-                context, Colors.green, "Successfully joined the group.");
-            Future.delayed(const Duration(seconds: 2), () {
-              nextScreenReplace(
-                  context,
-                  ChatPage(
-                      groupId: groupId,
-                      groupName: groupName,
-                      userName: userName));
-            });
           } else {
+            await DatabaseService(uid: user!.uid)
+                .leftTheGroup(groupId, userName, groupName);
             setState(() {
               isJoined = !isJoined;
               showSnackBar(context, Colors.red, "Left the group $groupName");

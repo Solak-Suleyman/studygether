@@ -10,7 +10,7 @@ import 'package:studygether/service/firebase_storage_service.dart';
 class DatabaseService {
   final String? uid;
   AuthService authService = AuthService();
-    
+
   DatabaseService({this.uid});
 
   // reference for collections
@@ -137,7 +137,7 @@ class DatabaseService {
     return documentSnapshot['token'];
   }
 
-Future getGroupUsers(String groupId) async {
+  Future getGroupUsers(String groupId) async {
     DocumentReference d = groupCollection.doc(groupId);
     DocumentSnapshot documentSnapshot = await d.get();
     return documentSnapshot['members'];
@@ -199,6 +199,40 @@ Future getGroupUsers(String groupId) async {
         "members": FieldValue.arrayUnion(["${uid}_$userName"])
       });
     }
+  }
+
+  Future joinTheGroup(String groupId, String userName, String groupName) async {
+    // doc reference
+    DocumentReference userDocumentReference = userCollection.doc(uid);
+    DocumentReference groupDocumentReference = groupCollection.doc(groupId);
+
+    //DocumentSnapshot documentSnapshot = await userDocumentReference.get();
+    //List<dynamic> groups = await documentSnapshot['groups'];
+
+    // if user has group -> then remove or rejoin
+    await userDocumentReference.update({
+      "groups": FieldValue.arrayUnion(["${groupId}_$groupName"])
+    });
+    await groupDocumentReference.update({
+      "members": FieldValue.arrayUnion(["${uid}_$userName"])
+    });
+  }
+
+  Future leftTheGroup(String groupId, String userName, String groupName) async {
+    // doc reference
+    DocumentReference userDocumentReference = userCollection.doc(uid);
+    DocumentReference groupDocumentReference = groupCollection.doc(groupId);
+
+    //DocumentSnapshot documentSnapshot = await userDocumentReference.get();
+    //List<dynamic> groups = await documentSnapshot['groups'];
+
+    // if user has group -> then remove or rejoin
+    await userDocumentReference.update({
+      "groups": FieldValue.arrayRemove(["${groupId}_$groupName"])
+    });
+    await groupDocumentReference.update({
+      "members": FieldValue.arrayRemove(["${uid}_$userName"])
+    });
   }
 
   sendTextMessage(String groupId, Map<String, dynamic> chatMessageData) async {
