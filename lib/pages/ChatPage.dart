@@ -28,7 +28,6 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPage extends State<ChatPage> {
-
   final notificationsService = NotificationService();
 
   String userName = "";
@@ -39,13 +38,22 @@ class _ChatPage extends State<ChatPage> {
   TextEditingController messageController = TextEditingController();
   String admin = "";
   Uint8List? file;
+  late ScrollController _listScrollController;
 
   @override
   void initState() {
+    _listScrollController = ScrollController();
     super.initState();
 
     getChatAndAdmin();
     notificationsService.firebaseNotification(context);
+  }
+
+  @override
+  void dispose() {
+    //_textEditingController.dispose();
+    _listScrollController.dispose();
+    super.dispose();
   }
 
   getChatAndAdmin() {
@@ -143,7 +151,9 @@ class _ChatPage extends State<ChatPage> {
       builder: (context, AsyncSnapshot snapshot) {
         return snapshot.hasData
             ? ListView.builder(
+                controller: _listScrollController,
                 itemCount: snapshot.data.docs.length,
+                padding: EdgeInsets.only(bottom: 90),
                 itemBuilder: (context, index) {
                   return MessageTile(
                       message: snapshot.data.docs[index]['message'],
@@ -158,6 +168,13 @@ class _ChatPage extends State<ChatPage> {
               );
       },
     );
+  }
+
+  scrollListToEnd() {
+    _listScrollController.animateTo(
+        _listScrollController.position.maxScrollExtent + 90.0,
+        duration: Duration(seconds: 2),
+        curve: Curves.ease);
   }
 
   sendTextMessage() async {
@@ -176,7 +193,8 @@ class _ChatPage extends State<ChatPage> {
         senderId: FirebaseAuth.instance.currentUser!.uid,
         groupId: widget.groupId,
       );
-            setState(() {
+      setState(() {
+        scrollListToEnd();
         messageController.clear();
       });
     }
