@@ -4,11 +4,12 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+import "package:firebase_messaging/firebase_messaging.dart";
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 import 'package:studygether/pages/ChatPage.dart';
+import 'package:studygether/pages/HomePage.dart';
 import 'package:studygether/service/database_service.dart';
 
 class NotificationService {
@@ -89,22 +90,31 @@ class NotificationService {
   }
 
   List<String> receiverTokens = [];
-    List<String> members = [];
+  List<dynamic> members = [];
 
-  getReceiverTokens(List<String> members) {
-    members.map((member) => {
-          member = member.substring(0, member.indexOf("_")),
-          databaseService.getToken(member),
-          receiverTokens.add(member)
-        });
-    
+  Future getReceiverTokens() async {
+    String? temp="";
+    String token="";
+    for (var member in members) {
+      temp=member.toString();
+      token=await databaseService.getTokens(temp.substring(0,temp.indexOf("_")));
+      receiverTokens.add(token);
+    }      
+      print(receiverTokens);
   }
 
   void firebaseNotification(context) {
     _initLocalNotification();
 
     FirebaseMessaging.onMessageOpenedApp
-        .listen((RemoteMessage message) async {});
+        .listen((RemoteMessage message) async {
+      await Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) =>
+              const HomePage(),
+        ),
+      );
+    });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       await _showLocalNotification(message);
@@ -116,15 +126,13 @@ class NotificationService {
       required String senderId,
       required String groupId}) async {
     try {
-    databaseService.getGroupUsers(groupId).then((value)=>{
-      
-    });
-      getReceiverTokens(members);
+      await databaseService
+          .getGroupUsers(groupId)
+          .then((value) => {members = value});
+      await getReceiverTokens();
 
-      receiverTokens.map((receiverToken) => {
-            if (receiverToken != senderId)
-              {
-                http.post(
+      for (var receiverToken in receiverTokens) {
+        http.post(
                   Uri.parse('https://fcm.googleapis.com/fcm/send'),
                   headers: <String, String>{
                     'Content-Type': 'application/json',
@@ -143,9 +151,12 @@ class NotificationService {
                       'senderId': senderId,
                     }
                   }),
-                )
-              },
-          });
+                );
+      }
+
+                
+              
+          receiverTokens.clear();
     } catch (e) {
       debugPrint(e.toString());
     }

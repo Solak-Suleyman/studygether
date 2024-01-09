@@ -1,7 +1,9 @@
 import 'dart:async';
+
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'package:studygether/helper/helper_function.dart';
 import 'package:studygether/service/auth_service.dart';
@@ -131,10 +133,13 @@ class DatabaseService {
         .snapshots();
   }
 
-  getToken(String uid) async {
-    DocumentReference d = userCollection.doc(uid);
+  Future getTokens(String uid) async {
+    if (uid!=FirebaseAuth.instance.currentUser!.uid) {
+      DocumentReference d = userCollection.doc(uid);
     DocumentSnapshot documentSnapshot = await d.get();
     return documentSnapshot['token'];
+    }
+    return [];
   }
 
   Future getGroupUsers(String groupId) async {
