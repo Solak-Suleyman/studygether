@@ -2,6 +2,9 @@ import 'dart:typed_data';
 
 //import 'package:studygether/helper/helper_function.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart';
+import 'package:studygether/pages/GroupInfo.dart';
+import 'package:studygether/pages/HomePage.dart';
 import 'package:studygether/service/auth_service.dart';
 import 'package:studygether/service/database_service.dart';
 import 'package:studygether/service/media_service.dart';
@@ -14,6 +17,7 @@ import 'package:studygether/widgets/message_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:studygether/widgets/widgets.dart';
 
 class ChatPage extends StatefulWidget {
   final String groupId;
@@ -43,8 +47,8 @@ class _ChatPage extends State<ChatPage> {
   @override
   void initState() {
     _listScrollController = ScrollController();
-    super.initState();
 
+    super.initState();
     getChatAndAdmin();
     notificationsService.firebaseNotification(context);
   }
@@ -54,6 +58,11 @@ class _ChatPage extends State<ChatPage> {
     //_textEditingController.dispose();
     _listScrollController.dispose();
     super.dispose();
+  }
+
+  scrollListToEnd() {
+    _listScrollController
+        .jumpTo(_listScrollController.position.maxScrollExtent + 90);
   }
 
   getChatAndAdmin() {
@@ -70,13 +79,48 @@ class _ChatPage extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyAppBar(
-        appBar: AppBar(),
+      appBar: AppBar(
+        toolbarHeight: MediaQuery.of(context).size.height / 10,
+        title: Column(children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(50.0),
+            child: Container( 
+              decoration: BoxDecoration(color: Colors.grey),
+              width: 55,
+              height: 55,
+              alignment: AlignmentDirectional.center,
+              child:Text(widget.groupName.substring(0, 1).toUpperCase(),
+              style: TextStyle(
+                fontSize: 40,
+                  color: Theme.of(context).primaryColor, fontWeight: FontWeight.w500),
+            ),)
+          ),
+          Text(widget.groupName),
+          ]
+
+        ),
+        centerTitle: true,
+        actions: [IconButton(onPressed: () {
+                nextScreen(
+                    context,
+                    GroupInfo(
+                      groupId: widget.groupId,
+                      groupName: widget.groupName,
+                      adminName: admin,
+                    ));
+              },
+              icon: const Icon(Icons.info))
+        ],
+        
       ),
       body: Stack(
         children: <Widget>[
           // chat messages here
-          chatMessages(),
+          SizedBox(
+            height: double.infinity,
+            child: chatMessages(),
+          ),
+
           Container(
             alignment: Alignment.bottomCenter,
             width: MediaQuery.of(context).size.width,
@@ -89,6 +133,9 @@ class _ChatPage extends State<ChatPage> {
                     child: TextFormField(
                   controller: messageController,
                   style: const TextStyle(color: Colors.white),
+                  onEditingComplete: () {
+                    sendTextMessage();
+                  },
                   decoration: const InputDecoration(
                     hintText: "Send a message...",
                     hintStyle: TextStyle(color: Colors.white, fontSize: 16),
@@ -151,6 +198,7 @@ class _ChatPage extends State<ChatPage> {
       builder: (context, AsyncSnapshot snapshot) {
         return snapshot.hasData
             ? ListView.builder(
+                scrollDirection: Axis.vertical,
                 controller: _listScrollController,
                 itemCount: snapshot.data.docs.length,
                 padding: EdgeInsets.only(bottom: 90),
@@ -168,13 +216,6 @@ class _ChatPage extends State<ChatPage> {
               );
       },
     );
-  }
-
-  scrollListToEnd() {
-    _listScrollController.animateTo(
-        _listScrollController.position.maxScrollExtent + 90.0,
-        duration: Duration(seconds: 2),
-        curve: Curves.ease);
   }
 
   sendTextMessage() async {
@@ -216,6 +257,7 @@ class _ChatPage extends State<ChatPage> {
         senderId: FirebaseAuth.instance.currentUser!.uid,
         groupId: widget.groupId,
       );
+      scrollListToEnd();
     }
   }
 }

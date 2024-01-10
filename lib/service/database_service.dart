@@ -86,7 +86,15 @@ class DatabaseService {
     DocumentSnapshot documentSnapshot = await d.get();
     return documentSnapshot['about'];
   }
-
+  Future getGroupInfo(String groupId) async{
+    DocumentReference d=groupCollection.doc(groupId);
+    DocumentSnapshot documentSnapshot=await d.get();
+    Map<String,String> recentMessage={
+      "recentMessage" :documentSnapshot['recentMessage'],
+      "recentMessageSender":documentSnapshot['recentMessageSender']
+    };
+    return recentMessage ;
+  }
   // get user groups
   getUserGroups() async {
     return userCollection.doc(uid).snapshots();
@@ -134,12 +142,12 @@ class DatabaseService {
   }
 
   Future getTokens(String uid) async {
-    if (uid!=FirebaseAuth.instance.currentUser!.uid) {
+    if (uid != FirebaseAuth.instance.currentUser!.uid) {
       DocumentReference d = userCollection.doc(uid);
-    DocumentSnapshot documentSnapshot = await d.get();
-    return documentSnapshot['token'];
+      DocumentSnapshot documentSnapshot = await d.get();
+      return documentSnapshot['token'];
     }
-    return [];
+    return "boş";
   }
 
   Future getGroupUsers(String groupId) async {

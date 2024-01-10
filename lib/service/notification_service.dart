@@ -93,25 +93,26 @@ class NotificationService {
   List<dynamic> members = [];
 
   Future getReceiverTokens() async {
-    String? temp="";
-    String token="";
+    String? temp = "";
+    String token = "";
     for (var member in members) {
-      temp=member.toString();
-      token=await databaseService.getTokens(temp.substring(0,temp.indexOf("_")));
-      receiverTokens.add(token);
-    }      
-      print(receiverTokens);
+      temp = member.toString();
+      temp = temp.substring(0, temp.indexOf("_"));
+      if (temp != FirebaseAuth.instance.currentUser!.uid) {
+        await databaseService.getTokens(temp).then((value) => token = value);
+        receiverTokens.add(token);
+      }
+    }
+    print(receiverTokens);
   }
 
   void firebaseNotification(context) {
     _initLocalNotification();
 
-    FirebaseMessaging.onMessageOpenedApp
-        .listen((RemoteMessage message) async {
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
       await Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (_) =>
-              const HomePage(),
+          builder: (_) => const HomePage(),
         ),
       );
     });
@@ -133,30 +134,28 @@ class NotificationService {
 
       for (var receiverToken in receiverTokens) {
         http.post(
-                  Uri.parse('https://fcm.googleapis.com/fcm/send'),
-                  headers: <String, String>{
-                    'Content-Type': 'application/json',
-                    'Authorization': 'key=$key',
-                  },
-                  body: jsonEncode(<String, dynamic>{
-                    "to": receiverToken,
-                    'priority': 'high',
-                    'notification': <String, dynamic>{
-                      'body': body,
-                      'title': 'New Message !',
-                    },
-                    'data': <String, String>{
-                      'click_action': 'FLUTTER_NOTIFICATION_CLICK',
-                      'status': 'done',
-                      'senderId': senderId,
-                    }
-                  }),
-                );
+          Uri.parse('https://fcm.googleapis.com/fcm/send'),
+          headers: <String, String>{
+            'Content-Type': 'application/json',
+            'Authorization': 'key=$key',
+          },
+          body: jsonEncode(<String, dynamic>{
+            "to": receiverToken,
+            'priority': 'high',
+            'notification': <String, dynamic>{
+              'body': body,
+              'title': 'New Message !',
+            },
+            'data': <String, String>{
+              'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+              'status': 'done',
+              'senderId': senderId,
+            }
+          }),
+        );
       }
 
-                
-              
-          receiverTokens.clear();
+      receiverTokens.clear();
     } catch (e) {
       debugPrint(e.toString());
     }
