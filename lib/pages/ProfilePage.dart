@@ -144,15 +144,6 @@ class _ProfilePage extends State<ProfilePage> {
             SettingsItem(callback: this.callback, title: userName, col: "fullName"),
             SettingsItem(callback: this.callback, title: email, col: "email"),
             SettingsItem(callback: this.callback, title: about, col: "about"),
-            // ElevatedButton(
-            //     style: ElevatedButton.styleFrom(
-            //       backgroundColor: Theme.of(context).primaryColor,
-            //     ),
-            //     onPressed: () {},
-            //     child: const Text(
-            //       "Update",
-            //       style: TextStyle(color: Colors.black),
-            //     )),
             const SizedBox(height: 10),
             InkWell(
               child: const Text(
